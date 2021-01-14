@@ -1,0 +1,9 @@
+# MODULES FOLDER
+/node_modules
+
+# LOCK FILES
+yarn.lock
+package.lock
+
+# CONFIG FILES
+config/default.json

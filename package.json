@@ -1,0 +1,12 @@
+{
+  "name": "user_profile_management",
+  "version": "1.0.0",
+  "description": "This is a application which manages user profiles and can be used as a separate service.",
+  "main": "serve.js",
+  "author": "Debojyoti Chatterjee <debojyoti.chatterjee9@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "config": "^3.3.3",
+    "express": "^4.17.1"
+  }
+}
