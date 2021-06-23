@@ -7,3 +7,7 @@ package.lock
 
 # CONFIG FILES
 config/default.json
+
+default.json
+
+logs

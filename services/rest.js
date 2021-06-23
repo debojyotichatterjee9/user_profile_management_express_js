@@ -1,16 +1,17 @@
 const express = require('express');
+var morgan = require('morgan');
+const winston = require('../config/winston');
+
 const config = require('config');
-const port = 3000
+const routes = require('./routes')
 
 
 
 module.exports = () => {
 
     const app = express()
-    app.get('/', (req, res) => {
-        res.send(req.headers)
-    })
-
+    app.use(morgan('combined', { stream: winston.stream }));
+    routes(app);
     return new Promise((resolve, reject) => {
         try {
             const port = config.get('services').rest.port;
@@ -23,5 +24,5 @@ module.exports = () => {
         catch (error) {
             reject(error);
         }
-    })
+    });
 }
