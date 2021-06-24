@@ -11,6 +11,8 @@ const routes = require('./routes')
 module.exports = () => {
 
     const app = express()
+    app.use(express.json());
+    app.use(express.urlencoded({extended: true}));
     app.use(expressRequestId)
 
     morgan.token('id', function getId(req) {

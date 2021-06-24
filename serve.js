@@ -1,6 +1,7 @@
 const cluster = require('cluster');
 const os = require("os");
 const config = require('config');
+const mongoose = require('mongoose');
 
 
 const bunyan = require("./utils/bunyan");
@@ -47,6 +48,23 @@ const setupWorkerProcesses = () => {
 
 
 const setUpExpress = () => {
+    
+    const mongodbURI = config.get('database').uri;
+    mongoose.connect(mongodbURI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useFindAndModify: false,
+        retryWrites: false,
+        useCreateIndex: true
+    })
+    .then(() => {
+        log.info(`Connected to MongoDB: ${mongodbURI}`);
+    })
+    .catch(err => {
+        log.error(`Error connecting to MongoDB: ${mongodbURI}`);
+        log.error(err);
+    });
+
     const rest = require('./services/rest')();
     return Promise.all([rest]);
 }

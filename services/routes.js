@@ -1,12 +1,12 @@
 const bunyan = require("../utils/bunyan")
 const winstonLogger = require("../utils/winston")
 const log = bunyan.logger
-const logResponse = bunyan.logResponse
 
 
 
 module.exports = function(app) {
     app.post('/', (req, res) => {
+        console.log(req.body)
         res.send(req.headers)
     });
 
