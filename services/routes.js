@@ -1,25 +1,17 @@
-const bunyan = require("../utils/bunyan")
-const winstonLogger = require("../utils/winston")
-const log = bunyan.logger
+const bunyan = require("../utils/bunyan");
+const winstonLogger = require("../utils/winston");
+const log = bunyan.logger;
+
+const genericViewObj = require("../modules/generic/views")
+const userViewObj = require("../modules/user/views")
 
 
 
 module.exports = function(app) {
-    app.post('/', (req, res) => {
-        console.log(req.body)
-        res.send(req.headers)
-    });
+    
+    app.get('/health', genericViewObj.genericHealthcheck);
 
-    app.get('/api/:n', function (req, res) {
-        let n = parseInt(req.params.n);
-        let count = 0;
+    app.get('/health/:n', genericViewObj.loadHealthCheck);
 
-        if (n > 5000000000) n = 5000000000;
-
-        for (let i = 0; i <= n; i++) {
-            count += i;
-        }
-
-        res.send(`Final count is ${count}`);
-    });
+    app.post("/user/create", userViewObj.createUser);
 };
