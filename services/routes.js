@@ -1,8 +1,12 @@
-const logger = require('../config/winston');
+const bunyan = require("../utils/bunyan")
+const winstonLogger = require("../utils/winston")
+const log = bunyan.logger
+const logResponse = bunyan.logResponse
+
+
 
 module.exports = function(app) {
-    app.get('/', (req, res) => {
-        logger.debug('Hello again distributed logs');
+    app.post('/', (req, res) => {
         res.send(req.headers)
     });
 

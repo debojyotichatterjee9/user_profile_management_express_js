@@ -25,7 +25,7 @@ var options = {
         level: 'warn',
         filename: `${appRoot}/logs/http.log`,
         format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
-        handleExceptions: true,
+        handleExceptions: false,
         json: true,
         maxsize: 5242880, // 5MB
         maxFiles: 5,
@@ -35,6 +35,15 @@ var options = {
         format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
         handleExceptions: true,
         colorize: true,
+    },
+    error: {
+        level: 'error',
+        filename: `${appRoot}/logs/errors.log`,
+        format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
+        handleExceptions: false,
+        json: true,
+        maxsize: 5242880, // 5MB
+        maxFiles: 5,
     },
     exception: {
         level: 'warn',
@@ -48,11 +57,14 @@ var options = {
 };
 
 // instantiate a new Winston Logger with the settings defined above
-var logger = new winston.createLogger({
+// have to define multiple logger for different environments
+const logger = new winston.createLogger({
     transports: [
         new winston.transports.File(options.file),
         new winston.transports.Http(options.http),
-        new winston.transports.Console(options.console)
+        new winston.transports.Console(options.console),
+        new winston.transports.File(options.error),
+
     ],
     exceptionHandlers: [
         new winston.transports.File(options.exception)
@@ -63,6 +75,7 @@ var logger = new winston.createLogger({
 // create a stream object with a 'write' function that will be used by `morgan`
 logger.stream = {
     write: function (message, encoding) {
+        console.log(message)
         // use the 'info' log level so the output will be picked up by both transports (file and console)
         logger.info(message);
     },
