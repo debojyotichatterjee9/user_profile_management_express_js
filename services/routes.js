@@ -7,8 +7,8 @@ const userViewObj = require("../modules/user/views")
 
 
 
-module.exports = function(app) {
-    
+module.exports = function (app) {
+
     app.get('/health', genericViewObj.genericHealthcheck);
 
     app.get('/health/:n', genericViewObj.loadHealthCheck);

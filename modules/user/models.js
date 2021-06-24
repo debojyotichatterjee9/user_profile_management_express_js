@@ -7,7 +7,7 @@ const UserSchema = new mongoose.Schema({
     last_name: { type: mongoose.Schema.Types.String },
     email: { type: mongoose.Schema.Types.String, index: true },
     username: { type: mongoose.Schema.Types.String, index: true },
-},{
+}, {
     collection: "users",
     toObject: { virtuals: true },
     toJSON: { virtuals: true },
