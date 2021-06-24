@@ -56,8 +56,6 @@ exports.logger = bunyan.createLogger({
 });
 
 exports.logResponse = function (id, body, statusCode) {
-    console.log(id)
-    console.log(body)
     var log = this.loggerInstance.child({
         id: id,
         body: body,
