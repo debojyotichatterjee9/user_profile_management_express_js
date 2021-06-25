@@ -32,21 +32,23 @@ module.exports = () => {
         }, true)
         log.trace({
             req: req
-        })
+        },'Request')
         next();
     });
-
+    
     app.use(function (req, res, next) {
         function afterResponse() {
             res.removeListener('finish', afterResponse);
             res.removeListener('close', afterResponse);
             var log = bunyan.logger.child({
                 id: req.id,
+                body: res.body,
+                statusCode: res.statusCode
             }, true)
-            log.trace({ res: res }, 'response')
+            log.trace({ res: res }, 'Response')
         }
 
-        res.on('finish', afterResponse);
+        // res.on('finish', afterResponse);
         res.on('close', afterResponse);
         next();
     });

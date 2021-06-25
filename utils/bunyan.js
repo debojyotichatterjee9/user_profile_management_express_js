@@ -61,6 +61,6 @@ exports.logResponse = function (id, body, statusCode) {
         body: body,
         statusCode: statusCode
     }, true)
-    log.trace('response')
+    log.trace('Response')
 }
 // module.exports = logger;
