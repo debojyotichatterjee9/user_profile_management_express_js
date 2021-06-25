@@ -5,7 +5,6 @@ exports.createUser = async (request, response) => {
 
     let validatorObj = new userHelperObj.PayloadValidation(payload);
     validation = await validatorObj.isValidPayload();
-
     if (!validation.status) {
         response.status(400).send({
             type: "error",
@@ -19,6 +18,4 @@ exports.createUser = async (request, response) => {
             id: userInfo.id
         })
     }
-
-
 }
