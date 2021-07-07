@@ -3,8 +3,10 @@ const userHelperObj = require("./helpers")
 exports.createUser = async (request, response) => {
     let [payload] = [request.body];
 
+    // checking the validation of the provided payload
     let validatorObj = new userHelperObj.PayloadValidation(payload);
     validation = await validatorObj.isValidPayload();
+    
     if (!validation.status) {
         response.status(400).send({
             type: "error",
