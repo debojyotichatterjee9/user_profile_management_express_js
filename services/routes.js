@@ -10,11 +10,11 @@ const authViewObj = require("../modules/authentication/views")
 
 module.exports = function (app) {
 
-    app.get('/health', genericViewObj.genericHealthcheck);
+    app.get('/user-profile/health', genericViewObj.genericHealthcheck);
 
-    app.get('/health/:n', genericViewObj.loadHealthCheck);
+    app.get('/user-profile/health/:n', genericViewObj.loadHealthCheck);
 
-    app.post("/user/create", userViewObj.createUser);
+    app.post("/user-profile/user/create", userViewObj.createUser);
 
-    app.post("/user/login", authViewObj.login);
+    app.post("/user-profile/user/login", authViewObj.login);
 };

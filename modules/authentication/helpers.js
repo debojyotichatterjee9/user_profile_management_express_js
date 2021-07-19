@@ -111,3 +111,7 @@ exports.PayloadValidation = class PayloadValidation {
         }
     }
 };
+
+exports.createUserSession = (payload) => {
+    
+}

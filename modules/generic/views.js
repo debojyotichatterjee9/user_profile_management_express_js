@@ -5,12 +5,12 @@ exports.genericHealthcheck = (request, response) => {
 }
 
 exports.loadHealthCheck = (request, response) => {
-    let n = parseInt(req.params.n);
+    let n = parseInt(request.params.n);
     let count = 0;
     for (let i = 1; i <= n; i++) {
         count += 1;
     }
-    res.status(200).send({
+    response.status(200).send({
         iterations: count
     });
 }
