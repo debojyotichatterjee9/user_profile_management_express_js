@@ -1,4 +1,4 @@
-const {logger} = require("../../utils/bunyan")
+const {logger} = require("../../utils/logger_utils/bunyan")
 const authHelperObj = require("./helpers.js")
 
 exports.login = async (request, response) => {
