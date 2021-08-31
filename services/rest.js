@@ -1,8 +1,8 @@
 const express = require('express');
 var morgan = require('morgan');
 const expressRequestId = require('express-request-id')();
-const winston = require('../utils/winston');
-const bunyan = require("../utils/bunyan")
+const winston = require('../utils/logger_utils/winston');
+const bunyan = require("../utils/logger_utils/bunyan")
 const config = require('config');
 const routes = require('./routes')
 

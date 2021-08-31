@@ -4,7 +4,7 @@ const config = require('config');
 const mongoose = require('mongoose');
 
 
-const bunyan = require("./utils/bunyan");
+const bunyan = require("./utils/logger_utils/bunyan");
 const log = bunyan.logger;
 
 let workers = [];
