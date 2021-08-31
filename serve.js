@@ -3,15 +3,17 @@ const os = require("os");
 const config = require('config');
 const mongoose = require('mongoose');
 
-
+const winstonLogger = require("./utils/logger_utils/winston");
 const bunyan = require("./utils/logger_utils/bunyan");
 const log = bunyan.logger;
 
 let workers = [];
 const setupWorkerProcesses = () => {
     // to read number of cores on system
+    const port = config.get('services').rest.port;
+    const host = config.get('services').rest.host;
     let numCores = require('os').cpus().length;
-    log.info('Master cluster setting up ' + numCores + ' workers');
+    winstonLogger.info('Master cluster setting up ' + numCores + ' workers');
 
     // iterate on number of cores need to be utilized by an application
     // current example will utilize all of them
@@ -28,7 +30,7 @@ const setupWorkerProcesses = () => {
 
     // process is clustered on a core and process id is assigned
     cluster.on('online', function (worker) {
-        log.info(`Worker ${worker.process.pid} is online!!`);
+        winstonLogger.info(`Worker ${worker.process.pid} on http://${host}:${port} is online!!`);
     });
 
     // if any of the worker process dies then start a new one by simply forking another one
@@ -48,7 +50,7 @@ const setupWorkerProcesses = () => {
 
 
 const setUpExpress = () => {
-    
+
     const mongodbURI = config.get('database').uri;
     mongoose.connect(mongodbURI, {
         useNewUrlParser: true,
@@ -57,13 +59,13 @@ const setUpExpress = () => {
         retryWrites: false,
         useCreateIndex: true
     })
-    .then(() => {
-        log.info(`Connected to MongoDB: ${mongodbURI}`);
-    })
-    .catch(err => {
-        log.error(`Error connecting to MongoDB: ${mongodbURI}`);
-        log.error(err);
-    });
+        .then(() => {
+            winstonLogger.info(`Connected to MongoDB: ${mongodbURI}`);
+        })
+        .catch(err => {
+            winstonLogger.error(`Error connecting to MongoDB: ${mongodbURI}`);
+            winstonLogger.error(err);
+        });
 
     const rest = require('./services/rest')();
     return Promise.all([rest]);

@@ -1,7 +1,13 @@
+const bunyan = require("../../utils/logger_utils/bunyan");
+const winstonLogger = require("../../utils/logger_utils/winston");
+const log = bunyan.logger;
+
 const userHelperObj = require("./helpers")
 const userValidatorUtilObj = require("../../utils/validators/user_validator")
 
 exports.createUser = async (request, response) => {
+
+    winstonLogger.error("Nothing")
     let [payload] = [request.body];
 
     // checking the validation of the provided payload

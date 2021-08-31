@@ -4,7 +4,7 @@ var appRoot = require('app-root-path');
 
 
 exports.logger = bunyan.createLogger({
-    name: "Profile Management",                     // Required
+    name: "User Profile Management",                     // Required
     level: "info",      // Optional, see "Levels" section
     // stream: process.stdout,           // Optional, see "Streams" section
     streams: [
@@ -58,7 +58,7 @@ exports.logger = bunyan.createLogger({
 exports.logResponse = function (id, body, statusCode) {
     var log = this.loggerInstance.child({
         id: id,
-        body: body,
+        // body: body,
         statusCode: statusCode
     }, true)
     log.trace('Response')

@@ -19,39 +19,46 @@ module.exports = () => {
         return req.id
     });
 
-    // app.use(morgan('tiny', { stream: winston.stream }));
-
-    /*
-    This below is for the bunyan logger
-    */
-    app.use(morgan('combined', { stream: process.stdout }));
-    app.use((req, res, next) => {
-        var log = bunyan.logger.child({
-            id: req.id,
-            body: req.body
-        }, true)
-        log.trace({
-            req: req
-        },'Request')
-        next();
-    });
+    /**
+     * Morgan Logger
+     */
+    // app.use(morgan('combined', { stream: process.stdout }));
     
-    app.use(function (req, res, next) {
-        function afterResponse() {
-            res.removeListener('finish', afterResponse);
-            res.removeListener('close', afterResponse);
-            var log = bunyan.logger.child({
-                id: req.id,
-                body: res.body,
-                statusCode: res.statusCode
-            }, true)
-            log.trace({ res: res }, 'Response')
-        }
+    /**
+     * Winston Logger
+     */
+    app.use(morgan('combined', { stream: winston.stream }));
 
-        // res.on('finish', afterResponse);
-        res.on('close', afterResponse);
-        next();
-    });
+    /**
+     * Bunyan Logger
+     */
+    // app.use((req, res, next) => {
+    //     var log = bunyan.logger.child({
+    //         id: req.id,
+    //         // body: req.body
+    //     }, true)
+    //     log.trace({
+    //         req: req
+    //     },'Request')
+    //     next();
+    // });
+    
+    // app.use(function (req, res, next) {
+    //     function afterResponse() {
+    //         res.removeListener('finish', afterResponse);
+    //         res.removeListener('close', afterResponse);
+    //         var log = bunyan.logger.child({
+    //             id: req.id,
+    //             // body: res.body,
+    //             statusCode: res.statusCode
+    //         }, true)
+    //         log.trace({ res: res }, 'Response')
+    //     }
+
+    //     // res.on('finish', afterResponse);
+    //     res.on('close', afterResponse);
+    //     next();
+    // });
 
     routes(app);
     return new Promise((resolve, reject) => {
@@ -59,7 +66,7 @@ module.exports = () => {
             const port = config.get('services').rest.port;
             const host = config.get('services').rest.host;
             const server = app.listen(port, host, () => {
-                console.log(`Profile Management listening at http://localhost:${port}`);
+                // console.log(`Profile Management listening at http://localhost:${port}`);
                 resolve(server);
             })
         }
