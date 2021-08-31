@@ -1,5 +1,5 @@
-const bunyan = require("../utils/bunyan");
-const winstonLogger = require("../utils/winston");
+const bunyan = require("../utils/logger_utils/bunyan");
+const winstonLogger = require("../utils/logger_utils/winston");
 const log = bunyan.logger;
 
 const genericViewObj = require("../modules/generic/views")

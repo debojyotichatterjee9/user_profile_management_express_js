@@ -1,10 +1,11 @@
 const userHelperObj = require("./helpers")
+const userValidatorUtilObj = require("../../utils/validators/user_validator")
 
 exports.createUser = async (request, response) => {
     let [payload] = [request.body];
 
     // checking the validation of the provided payload
-    let validatorObj = new userHelperObj.PayloadValidation(payload);
+    let validatorObj = new userValidatorUtilObj.PayloadValidation(payload);
     validation = await validatorObj.isValidPayload();
     
     if (!validation.status) {
