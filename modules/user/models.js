@@ -4,16 +4,28 @@ const crypto = require("crypto");
 
 
 
-const UserContactSchema = new mongoose.Schema({
-    label: String,
-    street: { type: mongoose.Schema.Types.Mixed },
-    city: { type: String, default: '' },
-    state: { type: String, default: '' },
-    country: { type: String, default: '' },
-    zipcode: { type: String, default: '' },
-    phone: { type: String, default: '' },
-    is_primary: { type: mongoose.Schema.Types.Boolean, default: true },
-});
+const AddressSchema = new mongoose.Schema({
+    label: { type: mongoose.Schema.Types.String, uppercase: true, trim: true },
+    address: { type: mongoose.Schema.Types.Mixed },
+    city: { type: mongoose.Schema.Types.String, trim: true, default: '' },
+    state: { type: mongoose.Schema.Types.String, trim: true, default: '' },
+    country: { type: mongoose.Schema.Types.String, trim: true, default: '' },
+    country_code: { type: mongoose.Schema.Types.String, uppercase:true, trim: true, default: '' },
+    zipcode: { type: mongoose.Schema.Types.String, trim: true, default: '' },
+    is_default: { type: mongoose.Schema.Types.Boolean, default: false },
+}, { _id : false, created_on: false, modified_on: false });
+
+const ContactSchema = new mongoose.Schema({
+    label: { type: mongoose.Schema.Types.String, uppercase: true, trim: true },
+    country_code: { type: mongoose.Schema.Types.String, trim: true },
+    number: { type: mongoose.Schema.Types.String, trim: true },
+    is_default: { type: mongoose.Schema.Types.Boolean, default: false },
+}, { _id : false, created_on: false, modified_on: false });
+
+const SocialProfilesSchema = new mongoose.Schema({
+    label: { type: mongoose.Schema.Types.String, lowercase: true, trim: true, default: null },
+    link: { type: mongoose.Schema.Types.String, trim: true, default: null }
+}, { _id : false, created_on: false, modified_on: false });
 
 
 const UserSchema = new mongoose.Schema({
@@ -22,7 +34,9 @@ const UserSchema = new mongoose.Schema({
     last_name: { type: mongoose.Schema.Types.String, trim: true },
     email: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true },
     username: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true },
-    contact: [UserContactSchema],
+    address: [AddressSchema],
+    contact: [ContactSchema],
+    social_profiles: [SocialProfilesSchema],
     theme_code: { type: mongoose.Schema.Types.String, default: "" },
     is_admin: { type: mongoose.Schema.Types.Boolean, default: false },
     avatar: { type: mongoose.Schema.Types.String, trim: true },

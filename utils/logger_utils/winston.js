@@ -22,7 +22,7 @@ var options = {
         colorize: false,
     },
     http: {
-        level: 'warn',
+        level: 'http',
         filename: `${appRoot}/logs/http.log`,
         format: winston.format.combine(winston.format.timestamp(), winston.format.json()),
         handleExceptions: false,
