@@ -10,6 +10,8 @@ COPY . .
 
 COPY config/default.json.sample config/default.json
 
-EXPOSE 8888
+ENV PORT 8888
+
+EXPOSE $PORT
 
 CMD ["npm", "run", "dev"]

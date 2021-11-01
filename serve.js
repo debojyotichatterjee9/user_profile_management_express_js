@@ -10,7 +10,7 @@ const log = bunyan.logger;
 let workers = [];
 const setupWorkerProcesses = () => {
     // to read number of cores on system
-    const port = config.get('services').rest.port;
+    const port = process.env.PORT || config.get('services').rest.port;
     const host = config.get('services').rest.host;
     let numCores = require('os').cpus().length;
     winstonLogger.info('Master cluster setting up ' + numCores + ' workers');
