@@ -6,9 +6,6 @@ services:
       dockerfile: Dockerfile.local
     ports:
       - "8888:8888"
-    volumes:
-      - ./:/app
-      - /app/node_modules
     environment:
       - PORT=8888
     # env_file:

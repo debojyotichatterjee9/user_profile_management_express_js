@@ -4,3 +4,4 @@ Dockerfile.local
 .dockerignore
 .git
 .gitignore
+docker-compose*
