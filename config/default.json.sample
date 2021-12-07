@@ -2,7 +2,13 @@
     "services": {
         "rest": {
             "host": "0.0.0.0",
-            "port": 8888
+            "port": 3000
         }
+    },
+    "database": {
+        "uri": "mongodb://localhost:27017/db_user_profile"
+    },
+    "sessions": {
+        "expiry_in_seconds": "3600"
     }
 }
