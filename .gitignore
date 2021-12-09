@@ -1,4 +1,4 @@
-# MODULES FOLDER
+# NODE MODULES FOLDER
 /node_modules
 
 # LOCK FILES
@@ -7,7 +7,8 @@ package.lock
 
 # CONFIG FILES
 config/default.json
-
 default.json
 
+# LOG FILES
 logs
+yarn-error.log
