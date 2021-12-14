@@ -14,7 +14,7 @@ const SessionSchema = new mongoose.Schema({
 
 SessionSchema.index({
     "created_on": 1
-}, { expireAfterSeconds: config.get('session').expiry });
+}, { expireAfterSeconds: config.get('sessions').expiry_in_seconds });
 
 SessionSchema.plugin(mongooseTimestamp);
 exports.Session = mongoose.model('Session', SessionSchema);
