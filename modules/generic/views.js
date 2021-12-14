@@ -1,6 +1,9 @@
+const winstonLogger = require("../../utils/logger_utils/winston")
+
 
 exports.genericHealthcheck = (request, response) => {
     request.headers.status = "OK"
+    winstonLogger.info(process.env.PORT)
     response.status(200).send(request.headers);
 }
 
