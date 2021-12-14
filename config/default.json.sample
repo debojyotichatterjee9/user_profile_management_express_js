@@ -6,7 +6,7 @@
         }
     },
     "database": {
-        "uri": "mongodb://localhost:27017/db_user_profile",
+        "mongo_uri": "mongodb://localhost:27017/db_user_profile",
         "mongo_docker_uri": "mongodb://root:root@mongo:27017/db_user_profile?authSource=admin"
     },
     "sessions": {
