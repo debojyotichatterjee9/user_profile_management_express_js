@@ -10,7 +10,7 @@ const log = bunyan.logger;
 let workers = [];
 const setupWorkerProcesses = () => {
     // to read number of cores on system
-    const port = config.get('services').rest.port;
+    const port = process.env.PORT || config.get('services').rest.port;
     const host = config.get('services').rest.host;
     let numCores = require('os').cpus().length;
     winstonLogger.info('Master cluster setting up ' + numCores + ' workers');
@@ -51,7 +51,7 @@ const setupWorkerProcesses = () => {
 
 const setUpExpress = () => {
 
-    const mongodbURI = config.get('database').uri;
+    const mongodbURI = config.get('database').mongo_docker_uri;
     mongoose.connect(mongodbURI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -61,10 +61,12 @@ const setUpExpress = () => {
     })
         .then(() => {
             winstonLogger.info(`Connected to MongoDB: ${mongodbURI}`);
+            // clearTimeout(reSetupDelay);
         })
         .catch(err => {
             winstonLogger.error(`Error connecting to MongoDB: ${mongodbURI}`);
             winstonLogger.error(err);
+            // const reSetupDelay = setTimeout(setUpExpress, 5000);
         });
 
     const rest = require('./services/rest')();

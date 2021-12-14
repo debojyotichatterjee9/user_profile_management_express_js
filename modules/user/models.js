@@ -32,7 +32,7 @@ const UserSchema = new mongoose.Schema({
     _id: { type: mongoose.Schema.Types.String, default: uuid.v4 },
     first_name: { type: mongoose.Schema.Types.String, trim: true },
     last_name: { type: mongoose.Schema.Types.String, trim: true },
-    email: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true },
+    email: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true, require:[true, "User must have an email address!"] },
     username: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true },
     address: [AddressSchema],
     contact: [ContactSchema],
