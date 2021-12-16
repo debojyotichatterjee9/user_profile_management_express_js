@@ -62,7 +62,7 @@ UserSchema.methods.setPassword = function (password) {
     this.secret_hash = crypto
         .pbkdf2Sync(password, this.salt_key, 1000, 64, "sha512")
         .toString("hex");
-}
+};
 
 UserSchema.methods.validatePassword = function (password) {
     const passwordHash = crypto
