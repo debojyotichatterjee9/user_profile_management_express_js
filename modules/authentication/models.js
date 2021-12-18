@@ -11,7 +11,13 @@ const SessionSchema = new mongoose.Schema({
     user_email: { type: mongoose.Schema.Types.String, ref: 'User' },
     user_agent: String,
     ip: String,
-}, { collection: 'user_sessions' });
+}, { 
+    collection: "user_sessions",
+timestamps: {
+    currentTime: () => Math.floor(Date.now() / 1000),
+    createdAt: "created_at",
+    updatedAt: "updated_at"
+} });
 
 SessionSchema.index({
     "created_on": 1
