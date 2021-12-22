@@ -22,9 +22,10 @@ exports.login = async (request, response) => {
         const validationResp = await authHelperObj.validateCredentials(userIdentity, password);
         if (validationResp) {
             let sessionData = await authHelperObj.startSession({
-                'user_id': validationResp.id,
-                'user_agent': request.headers['user-agent'],
-                'ip': request.headers['x-real-ip'] || request.connection.remoteAddress
+                "user_id": validationResp.id,
+                "email": validationResp.email,
+                "user_agent": request.headers['user-agent'],
+                "ip": request.headers['x-real-ip'] || request.connection.remoteAddress
             });
             response.status(200).send({
                 type: "success",
@@ -41,9 +42,9 @@ exports.login = async (request, response) => {
 
 
 exports.validateSession = async (request, response) => {
-    const authHeader = httpReq.headers.authorization;
+    const authHeader = request.headers.authorization;
     if (!authHeader) {
-        return httpResp.status(401).send({
+        return response.status(401).send({
             error: {
                 code: 'MISSING_TOKEN',
                 message: 'Unauthorized Access.'
@@ -52,18 +53,18 @@ exports.validateSession = async (request, response) => {
     }
     let token = authHeader.split(' ')[1];
     let sessionInfo = await authHelperObj.validateSession(token, {
-        user_agent: httpReq.headers['user-agent']
+        user_agent: request.headers['user-agent']
     });
 
     if (false !== sessionInfo) {
         let userInfo = await userHelperObj.getUserInfoById(sessionInfo.user_id);
 
-        httpResp.status(200).send({
+        response.status(200).send({
             user: userInfo
         });
     }
     else {
-        httpResp.status(401).send({
+        response.status(401).send({
             error: {
                 code: 'INVALID_TOKEN',
                 message: 'Unauthorized Access.'

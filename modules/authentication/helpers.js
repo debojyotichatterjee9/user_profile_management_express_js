@@ -27,7 +27,7 @@ exports.startSession = async (params) => {
         sessionEntry.user_id = params.user_id;
         sessionEntry.user_agent = params.user_agent;
         sessionEntry.ip = params.ip;
-        sessionEntry.generateToken(params.user_id, privateKeyFile);
+        sessionEntry.generateToken(params.user_id, params.email, privateKeyFile);
 
         sessionEntry.save((err, sessionData) => { 
             if(err) { 
@@ -47,22 +47,24 @@ exports.startSession = async (params) => {
 
 
 exports.validateSession = async (token, params) => {
-    const publicKeyFile = config.get('session').security.public_key;
-    let sessionInfo = await authModel.Session.findOneAndUpdate({
+    const publicKeyFile = config.get('sessions').security.public_key;
+    let sessionInfo = await 
+    
+    Session.findOneAndUpdate({
         'token': token
     }, {
         last_access_on: Date.now()
     }, {
         'upsert': false
     });
-
+    console.log(sessionInfo)
     if (sessionInfo) {
         let timestamp = Math.round(Date.now() / 1000);
-        let tokenData = sessionInfo.decodeToken(sessionInfo.token, publicKeyFile);
+        let tokenData = await sessionInfo.decodeToken(sessionInfo.token, publicKeyFile);
         if (false !== tokenData &&
             sessionInfo.user_agent === params.user_agent &&
             tokenData.sub === String(sessionInfo.user_id) &&
-            tokenData.exp > timestamp) {
+            tokenData.azp > timestamp) {
             return sessionInfo;
         }
     }

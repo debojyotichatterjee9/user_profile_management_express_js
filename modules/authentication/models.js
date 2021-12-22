@@ -24,18 +24,36 @@ SessionSchema.index({
     "created_on": 1
 }, { expireAfterSeconds: config.get('sessions').expiry_in_seconds });
 
-SessionSchema.methods.generateToken = function(userId, keyFile) {
+SessionSchema.methods.generateToken = function(userId, email, keyFile) {
     let privateKey = fs.readFileSync(keyFile);
 
     let token = jwt.sign({
         iss: 'user_profile_mgmt',
         aud: 'user',
         sub: "authentication",
+        email: email,
+        azp: userId,
     }, privateKey, {
         algorithm: 'RS256',
         expiresIn: config.get('sessions').expiry_in_seconds
     });
     this.token = token;
+};
+
+
+
+SessionSchema.methods.decodeToken = function (token, keyFile) {
+    try {
+        let publicKey = fs.readFileSync(keyFile);
+        let decoded = jwt.verify(token, publicKey, {
+            algorithms: ['RS256']
+        });
+        return decoded;
+    }
+    catch (err) {
+        console.log(err)
+        return false;
+    }
 };
 
 // SessionSchema.plugin(mongooseTimestamp);
