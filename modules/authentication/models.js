@@ -11,6 +11,7 @@ const SessionSchema = new mongoose.Schema({
     user_email: { type: mongoose.Schema.Types.String, ref: 'User' },
     user_agent: String,
     ip: String,
+    last_access_on: { type: Date, default: Date.now }
 }, { 
     collection: "user_sessions",
 timestamps: {
@@ -27,9 +28,9 @@ SessionSchema.methods.generateToken = function(userId, keyFile) {
     let privateKey = fs.readFileSync(keyFile);
 
     let token = jwt.sign({
-        iss: 'something',
-        aud: 'something',
-        sub: String(userId),
+        iss: 'user_profile_mgmt',
+        aud: 'user',
+        sub: "authentication",
     }, privateKey, {
         algorithm: 'RS256',
         expiresIn: config.get('sessions').expiry_in_seconds

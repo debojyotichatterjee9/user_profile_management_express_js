@@ -37,3 +37,37 @@ exports.login = async (request, response) => {
         }
     }
 }
+
+
+
+exports.validateSession = async (request, response) => {
+    const authHeader = httpReq.headers.authorization;
+    if (!authHeader) {
+        return httpResp.status(401).send({
+            error: {
+                code: 'MISSING_TOKEN',
+                message: 'Unauthorized Access.'
+            }
+        });
+    }
+    let token = authHeader.split(' ')[1];
+    let sessionInfo = await authHelperObj.validateSession(token, {
+        user_agent: httpReq.headers['user-agent']
+    });
+
+    if (false !== sessionInfo) {
+        let userInfo = await userHelperObj.getUserInfoById(sessionInfo.user_id);
+
+        httpResp.status(200).send({
+            user: userInfo
+        });
+    }
+    else {
+        httpResp.status(401).send({
+            error: {
+                code: 'INVALID_TOKEN',
+                message: 'Unauthorized Access.'
+            }
+        });
+    }
+}

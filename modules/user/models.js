@@ -42,8 +42,9 @@ const UserSchema = new mongoose.Schema({
     avatar: { type: mongoose.Schema.Types.String, trim: true },
     secret_hash: { type: mongoose.Schema.Types.String },
     salt_key: { type: mongoose.Schema.Types.String },
-    is_enabled: { type: mongoose.Schema.Types.Boolean },
-    is_disabled: { type: mongoose.Schema.Types.Boolean, default: false },
+    is_enabled: { type: mongoose.Schema.Types.Boolean, default: false },
+    is_activated: { type: mongoose.Schema.Types.Boolean, default: false },
+    is_deleted: { type: mongoose.Schema.Types.Boolean, default: false },
 
 }, {
     collection: "users",

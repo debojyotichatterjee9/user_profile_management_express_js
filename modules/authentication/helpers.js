@@ -44,3 +44,28 @@ exports.startSession = async (params) => {
 
     return promise;
 };
+
+
+exports.validateSession = async (token, params) => {
+    const publicKeyFile = config.get('session').security.public_key;
+    let sessionInfo = await authModel.Session.findOneAndUpdate({
+        'token': token
+    }, {
+        last_access_on: Date.now()
+    }, {
+        'upsert': false
+    });
+
+    if (sessionInfo) {
+        let timestamp = Math.round(Date.now() / 1000);
+        let tokenData = sessionInfo.decodeToken(sessionInfo.token, publicKeyFile);
+        if (false !== tokenData &&
+            sessionInfo.user_agent === params.user_agent &&
+            tokenData.sub === String(sessionInfo.user_id) &&
+            tokenData.exp > timestamp) {
+            return sessionInfo;
+        }
+    }
+
+    return false;
+};

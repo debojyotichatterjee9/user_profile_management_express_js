@@ -14,5 +14,7 @@ module.exports = function (app) {
 
     app.post("/user-profile/user/login", authViewObj.login);
 
+    app.post("/user-profile/user/validate", authViewObj.validateSession);
+
     app.put("/user-profile/user/:userId/update", userViewObj.updateUser);
 };
