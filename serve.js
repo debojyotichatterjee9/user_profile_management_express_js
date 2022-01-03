@@ -51,7 +51,7 @@ const setupWorkerProcesses = () => {
 
 const setUpExpress = () => {
 
-    const mongodbURI = config.get('database').mongo_docker_uri;
+    const mongodbURI = config.get('database').mongo_uri;
     mongoose.connect(mongodbURI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,

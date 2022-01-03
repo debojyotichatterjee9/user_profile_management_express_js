@@ -11,6 +11,9 @@ exports.saveUser = (payload) => {
     userInfo.social_profiles = payload.social_profiles;
     userInfo.theme_code = payload.theme_code;
     userInfo.is_admin = payload.is_admin;
+    userInfo.is_enabled = payload.is_enabled;
+    userInfo.is_activated = payload.is_activated;
+    userInfo.is_deleted = payload.is_deleted;
     userInfo.avatar = payload.avatar;
     
     if (payload.password && payload.password.length > 0) {
@@ -22,3 +25,22 @@ exports.saveUser = (payload) => {
     userInfo.save();
     return userInfo;
 }
+
+
+
+exports.getUserInfoById = async (userId) => {
+    try {
+        let userInfo = await User.findById(userId).select([
+            "-salt_key",
+            "-secret_hash",
+            "-__v",
+            "-is_deleted"
+        ]);
+        if (!userInfo) {
+            return false;
+        }
+        return userInfo;
+    } catch (err) {
+        return false;
+    }
+};
