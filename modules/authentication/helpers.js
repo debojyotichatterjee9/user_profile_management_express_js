@@ -57,14 +57,15 @@ exports.validateSession = async (token, params) => {
     }, {
         'upsert': false
     });
-    console.log(sessionInfo)
     if (sessionInfo) {
         let timestamp = Math.round(Date.now() / 1000);
+        console.log(timestamp)
         let tokenData = await sessionInfo.decodeToken(sessionInfo.token, publicKeyFile);
+        console.log(tokenData.exp);
         if (false !== tokenData &&
             sessionInfo.user_agent === params.user_agent &&
-            tokenData.sub === String(sessionInfo.user_id) &&
-            tokenData.azp > timestamp) {
+            tokenData.azp === String(sessionInfo.user_id) &&
+            tokenData.exp > timestamp) {
             return sessionInfo;
         }
     }

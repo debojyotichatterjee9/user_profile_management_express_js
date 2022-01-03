@@ -1,6 +1,7 @@
 const { logger } = require("../../utils/logger_utils/bunyan")
 const authValidatorUtilObj = require("../../utils/validators/auth_validator")
 const authHelperObj = require("./helpers.js")
+const userHelperObj = require("../user/helpers");
 
 exports.login = async (request, response) => {
     const [payload] = [request.body];
@@ -55,10 +56,8 @@ exports.validateSession = async (request, response) => {
     let sessionInfo = await authHelperObj.validateSession(token, {
         user_agent: request.headers['user-agent']
     });
-
     if (false !== sessionInfo) {
         let userInfo = await userHelperObj.getUserInfoById(sessionInfo.user_id);
-
         response.status(200).send({
             user: userInfo
         });
