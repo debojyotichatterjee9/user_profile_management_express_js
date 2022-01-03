@@ -10,6 +10,6 @@
         "mongo_docker_uri": "mongodb://root:root@mongo:27017/db_user_profile?authSource=admin"
     },
     "sessions": {
-        "expiry_in_seconds": "3600"
+        "expiry_in_seconds": 3600
     }
 }
