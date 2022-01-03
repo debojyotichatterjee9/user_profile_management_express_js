@@ -22,7 +22,6 @@ return false;
 exports.startSession = async (params) => {
     let promise = new Promise((resolve, reject) => {
         const privateKeyFile = path.join(__dirname, '..', '..', config.get('sessions').security.private_key);
-        console.log(privateKeyFile);
         let sessionEntry = new Session();
         sessionEntry.user_id = params.user_id;
         sessionEntry.user_agent = params.user_agent;
@@ -59,9 +58,7 @@ exports.validateSession = async (token, params) => {
     });
     if (sessionInfo) {
         let timestamp = Math.round(Date.now() / 1000);
-        console.log(timestamp)
         let tokenData = await sessionInfo.decodeToken(sessionInfo.token, publicKeyFile);
-        console.log(tokenData.exp);
         if (false !== tokenData &&
             sessionInfo.user_agent === params.user_agent &&
             tokenData.azp === String(sessionInfo.user_id) &&
