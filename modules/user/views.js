@@ -33,6 +33,7 @@ exports.createUser = async (request, response) => {
     }
 }
 
+
 /**
  * UPDATE USER
  * @param {Object} request 
@@ -76,4 +77,9 @@ exports.updateUser = async (request, response) => {
             id: userInfo.id
         })
     }
+}
+
+
+exports.getUserList = (request, response) => {
+    console.log("Fetching users...")
 }

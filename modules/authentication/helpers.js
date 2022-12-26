@@ -3,19 +3,19 @@ const { User } = require("../user/models");
 const path = require("path");
 const config = require("config");
 
-exports.validateCredentials =  async (userIdentity, password) => {
+exports.validateCredentials = async (userIdentity, password) => {
 
-const userInfo = await User.findOne({
-    $or:[
-        { username: userIdentity.toLowerCase() },
-        { email: userIdentity.toLowerCase() }
-    ]
-});
-if(userInfo) {
-    const passwordValidation = await userInfo.validatePassword(password);
-    return userInfo;
-}
-return false;
+    const userInfo = await User.findOne({
+        $or: [
+            { username: userIdentity.toLowerCase() },
+            { email: userIdentity.toLowerCase() }
+        ]
+    });
+    if (userInfo) {
+        const passwordValidation = await userInfo.validatePassword(password);
+        return userInfo;
+    }
+    return false;
 
 };
 
@@ -28,8 +28,8 @@ exports.startSession = async (params) => {
         sessionEntry.ip = params.ip;
         sessionEntry.generateToken(params.user_id, params.email, privateKeyFile);
 
-        sessionEntry.save((err, sessionData) => { 
-            if(err) { 
+        sessionEntry.save((err, sessionData) => {
+            if (err) {
                 console.log(err);
                 resolve(false);
             }
@@ -47,15 +47,15 @@ exports.startSession = async (params) => {
 
 exports.validateSession = async (token, params) => {
     const publicKeyFile = config.get('sessions').security.public_key;
-    let sessionInfo = await 
-    
-    Session.findOneAndUpdate({
-        'token': token
-    }, {
-        last_access_on: Date.now()
-    }, {
-        'upsert': false
-    });
+    let sessionInfo = await
+
+        Session.findOneAndUpdate({
+            'token': token
+        }, {
+            last_access_on: Date.now()
+        }, {
+            'upsert': false
+        });
     if (sessionInfo) {
         let timestamp = Math.round(Date.now() / 1000);
         let tokenData = await sessionInfo.decodeToken(sessionInfo.token, publicKeyFile);
@@ -66,6 +66,5 @@ exports.validateSession = async (token, params) => {
             return sessionInfo;
         }
     }
-
     return false;
 };

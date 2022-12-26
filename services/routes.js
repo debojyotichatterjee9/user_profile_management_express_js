@@ -10,6 +10,8 @@ module.exports = function (app) {
 
     app.get('/user-profile/health/:n', genericViewObj.loadHealthCheck);
 
+    app.get('/user-profile/user/list', userViewObj.getUserList);
+
     app.post("/user-profile/user/create", userViewObj.createUser);
 
     app.post("/user-profile/user/login", authViewObj.login);
