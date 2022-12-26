@@ -11,5 +11,10 @@
     },
     "sessions": {
         "expiry_in_seconds": 3600
+    },
+    "mailer": {
+        "sendgrid": {
+            "api_key": "<<PUT YOUR API KEY HERE>>"
+        }
     }
 }

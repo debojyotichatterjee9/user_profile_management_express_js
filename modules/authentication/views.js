@@ -1,7 +1,8 @@
-const { logger } = require("../../utils/logger_utils/bunyan")
-const authValidatorUtilObj = require("../../utils/validators/auth_validator")
-const authHelperObj = require("./helpers.js")
+const { logger } = require("../../utils/logger_utils/bunyan");
+const authValidatorUtilObj = require("../../utils/validators/auth_validator");
+const authHelperObj = require("./helpers.js");
 const userHelperObj = require("../user/helpers");
+const sendgridHelper = require("../../utils/mailer/sendgrid");
 
 exports.login = async (request, response) => {
     const [payload] = [request.body];
@@ -28,6 +29,12 @@ exports.login = async (request, response) => {
                 "user_agent": request.headers['user-agent'],
                 "ip": request.headers['x-real-ip'] || request.connection.remoteAddress
             });
+            sendgridHelper.transporter.sendMail({
+                to: validationResp.email,
+                from: "debojyotic@duck.com",
+                subject: "Login Successful",
+                html: `<h1>Your account has been logged in from ${request.headers['x-real-ip'] || request.connection.remoteAddress} </h1>`
+            })
             response.status(200).send({
                 type: "success",
             });

@@ -6,8 +6,6 @@ const bunyan = require("../utils/logger_utils/bunyan")
 const config = require('config');
 const routes = require('./routes')
 
-
-
 module.exports = () => {
 
     const app = express()
