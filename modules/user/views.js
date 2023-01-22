@@ -17,7 +17,7 @@ exports.createUser = async (request, response) => {
     // checking the validation of the provided payload
     let validatorObj = new userValidatorUtilObj.PayloadValidation(payload);
     validation = await validatorObj.isValidPayload();
-    
+
     if (!validation.status) {
         return response.status(400).send({
             type: "error",
@@ -41,41 +41,50 @@ exports.createUser = async (request, response) => {
  */
 exports.updateUser = async (request, response) => {
 
-    let [payload] = [request.body];
+    let [userId, payload] = [request.params.userId, request.body];
 
     // checking the validation of the provided payload
     let validatorObj = new userValidatorUtilObj.PayloadValidation();
-    
-    if (payload.email && validatorObj.isValidEmail(payload.email)) {
+
+    if (payload.email && await !validatorObj.isValidEmail(payload.email)) {
         return response.status(400).send({
             type: "email",
             message: "Invalid email supplied."
         })
     }
-    if (payload.email && validatorObj.isDuplicateEmail(payload.email)) {
+    if (payload.email && await validatorObj.isDuplicateEmail(payload.email, userId)) {
         return response.status(400).send({
             type: "email",
             message: "Supplied email already exists."
         })
     }
-    if (payload.username && validatorObj.isValidUsername(payload.username)) {
+    if (payload.username && await !validatorObj.isValidUsername(payload.username)) {
         return response.status(400).send({
             type: "username",
             message: "Invalid username supplied."
         })
     }
-    if (payload.username && validatorObj.isDuplicateUsername(payload.username)) {
+    if (payload.username && await validatorObj.isDuplicateUsername(payload.username)) {
         return response.status(400).send({
             type: "username",
-            message: "Supplied email already exists."
+            message: "Supplied username already exists."
         })
     }
     else {
-        let userInfo = await userHelperObj.saveUser(payload);
-        response.status(201).send({
-            type: "success",
-            id: userInfo.id
-        })
+        let updateResp = await userHelperObj.updateUser(userId, payload);
+        if (updateResp.id) {
+            return response.status(200).send({
+                type: "success",
+                id: updateResp.id
+            });
+        }
+        else {
+            return response.status(400).send({
+                type: updateResp.type,
+                message: updateResp.message
+            })
+        }
+
     }
 }
 
