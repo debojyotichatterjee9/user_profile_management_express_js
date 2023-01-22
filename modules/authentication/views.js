@@ -37,6 +37,7 @@ exports.login = async (request, response) => {
             })
             response.status(200).send({
                 type: "success",
+                sessionData
             });
         }
         else {

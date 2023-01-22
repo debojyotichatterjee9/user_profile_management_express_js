@@ -1,18 +1,24 @@
 const express = require('express');
 var morgan = require('morgan');
 const expressRequestId = require('express-request-id')();
+const { graphqlHTTP } = require("express-graphql");
 const winston = require('../utils/logger_utils/winston');
 const bunyan = require("../utils/logger_utils/bunyan")
 const config = require('config');
 const routes = require('./routes')
+const graphqlSchema = require("../graphql/schema");
+const graphqlResolvers = require("../graphql/resolvers");
 
 module.exports = () => {
 
     const app = express()
     app.use(express.json());
-    app.use(express.urlencoded({extended: true}));
+    app.use(express.urlencoded({ extended: true }));
     app.use(expressRequestId)
-
+    app.use("/graphql", graphqlHTTP({
+        schema: graphqlSchema,
+        rootValue: graphqlResolvers,
+    }));
     morgan.token('id', function getId(req) {
         return req.id
     });
@@ -21,7 +27,7 @@ module.exports = () => {
      * Morgan Logger
      */
     // app.use(morgan('combined', { stream: process.stdout }));
-    
+
     /**
      * Winston Logger
      */
@@ -40,7 +46,7 @@ module.exports = () => {
     //     },'Request')
     //     next();
     // });
-    
+
     // app.use(function (req, res, next) {
     //     function afterResponse() {
     //         res.removeListener('finish', afterResponse);
