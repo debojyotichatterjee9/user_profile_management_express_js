@@ -18,6 +18,7 @@ module.exports = () => {
     app.use("/graphql", graphqlHTTP({
         schema: graphqlSchema,
         rootValue: graphqlResolvers,
+        graphiql: true
     }));
     morgan.token('id', function getId(req) {
         return req.id
