@@ -23,6 +23,10 @@ module.exports = buildSchema(`
     type User {
         id: ID!
         email: String!
+    }
+    type LoginResponse {
+    sid: String!
+    token: String!
     } 
     input createUserPayload {
         first_name: String!
@@ -31,8 +35,12 @@ module.exports = buildSchema(`
         username: String!
         password: String!
     }
+    input loginPayload {
+        email: String!,
+        password: String!
+    }
     type RootQuery {
-        hello: String
+        login(payload: loginPayload): LoginResponse!
     }
     type RootMutation{
         createUser(payload: createUserPayload): User!
