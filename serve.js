@@ -55,9 +55,9 @@ const setUpExpress = () => {
     mongoose.connect(mongodbURI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        useFindAndModify: false,
+        // useFindAndModify: false,
         retryWrites: false,
-        useCreateIndex: true
+        // useCreateIndex: true
     })
         .then(() => {
             winstonLogger.info(`Connected to MongoDB: ${mongodbURI}`);
@@ -65,7 +65,8 @@ const setUpExpress = () => {
         })
         .catch(err => {
             winstonLogger.error(`Error connecting to MongoDB: ${mongodbURI}`);
-            winstonLogger.error(err);
+            // winstonLogger.error(err);
+            console.log(err)
             // const reSetupDelay = setTimeout(setUpExpress, 5000);
         });
 
