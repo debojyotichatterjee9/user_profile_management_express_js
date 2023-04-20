@@ -5,7 +5,7 @@ var appRoot = require('app-root-path');
 
 exports.logger = bunyan.createLogger({
     name: "User Profile Management",                     // Required
-    level: "info",      // Optional, see "Levels" section
+    // level: "info",      // Optional, see "Levels" section
     // stream: process.stdout,           // Optional, see "Streams" section
     streams: [
         {

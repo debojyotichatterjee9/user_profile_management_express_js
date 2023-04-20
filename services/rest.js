@@ -67,7 +67,7 @@ module.exports = () => {
             const port = process.env.PORT || config.get('services').rest.port;
             const host = config.get('services').rest.host;
             const server = app.listen(port, host, () => {
-                // console.log(`Profile Management listening at http://localhost:${port}`);
+                // console.log(`User Profile Management listening at http://localhost:${port}`);
                 resolve(server);
             })
         }
