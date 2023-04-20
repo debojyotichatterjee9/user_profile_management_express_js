@@ -13,7 +13,7 @@ const NameSchema = new mongoose.Schema({
 }, { _id : false, created_on: false, modified_on: false });
 
 const AuthenticationSchema = new mongoose.Schema({
-    user_id: { type: mongoose.Schema.Types.String, default: uuid.v4 },
+    user_id: { type: mongoose.Schema.Types.String, default: uuid.v4, unique: true },
     secret_hash: { type: mongoose.Schema.Types.String },
     salt_key: { type: mongoose.Schema.Types.String },
 }, { _id : false, created_on: false, modified_on: false });
@@ -24,8 +24,8 @@ const LocationSchema = new mongoose.Schema({
 }, { _id : false, created_on: false, modified_on: false });
 
 const TimezoneSchema = new mongoose.Schema({
-    latitude: { type: mongoose.Schema.Types.String, trim: true },
-    longitude: { type: mongoose.Schema.Types.String, trim: true },
+    offset: { type: mongoose.Schema.Types.String, trim: true },
+    zone: { type: mongoose.Schema.Types.String, trim: true },
 }, { _id : false, created_on: false, modified_on: false });
 
 const AddressSchema = new mongoose.Schema({
@@ -71,7 +71,6 @@ const MetaDataSchema = new mongoose.Schema({
 
 const UserSchema = new mongoose.Schema({
     name: NameSchema,
-    last_name: { type: mongoose.Schema.Types.String, trim: true },
     gender: { type: mongoose.Schema.Types.String, trim: true },
     email: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true, require:[true, "User must have an unique email address!"] },
     username: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true },
