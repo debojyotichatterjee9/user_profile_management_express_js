@@ -4,6 +4,30 @@ const crypto = require("crypto");
 
 
 
+const NameSchema = new mongoose.Schema({
+    name_prefix: { type: mongoose.Schema.Types.String, trim: true },
+    first_name: { type: mongoose.Schema.Types.String, trim: true },
+    last_name: { type: mongoose.Schema.Types.String, trim: true },
+    name_suffix: { type: mongoose.Schema.Types.String, trim: true },
+    
+}, { _id : false, created_on: false, modified_on: false });
+
+const AuthenticationSchema = new mongoose.Schema({
+    user_id: { type: mongoose.Schema.Types.String, default: uuid.v4 },
+    secret_hash: { type: mongoose.Schema.Types.String },
+    salt_key: { type: mongoose.Schema.Types.String },
+}, { _id : false, created_on: false, modified_on: false });
+
+const LocationSchema = new mongoose.Schema({
+    latitude: { type: mongoose.Schema.Types.String, trim: true },
+    longitude: { type: mongoose.Schema.Types.String, trim: true },
+}, { _id : false, created_on: false, modified_on: false });
+
+const TimezoneSchema = new mongoose.Schema({
+    latitude: { type: mongoose.Schema.Types.String, trim: true },
+    longitude: { type: mongoose.Schema.Types.String, trim: true },
+}, { _id : false, created_on: false, modified_on: false });
+
 const AddressSchema = new mongoose.Schema({
     label: { type: mongoose.Schema.Types.String, uppercase: true, trim: true },
     address: { type: mongoose.Schema.Types.Mixed },
@@ -12,6 +36,8 @@ const AddressSchema = new mongoose.Schema({
     country: { type: mongoose.Schema.Types.String, trim: true, default: '' },
     country_code: { type: mongoose.Schema.Types.String, uppercase:true, trim: true, default: '' },
     zipcode: { type: mongoose.Schema.Types.String, trim: true, default: '' },
+    location: LocationSchema,
+    timezone: TimezoneSchema, 
     is_default: { type: mongoose.Schema.Types.Boolean, default: false },
 }, { _id : false, created_on: false, modified_on: false });
 
@@ -27,24 +53,35 @@ const SocialProfilesSchema = new mongoose.Schema({
     link: { type: mongoose.Schema.Types.String, trim: true, default: null }
 }, { _id : false, created_on: false, modified_on: false });
 
+const AvatarSchema = new mongoose.Schema({
+    large: { type: mongoose.Schema.Types.String, trim: true },
+    medium: { type: mongoose.Schema.Types.String, trim: true },
+    small: { type: mongoose.Schema.Types.String, trim: true },
+    thumbnail: { type: mongoose.Schema.Types.String, trim: true }
+}, { _id : false, created_on: false, modified_on: false });
+
+const MetaDataSchema = new mongoose.Schema({
+    theme_code: { type: mongoose.Schema.Types.String, default: null },
+    is_super_admin: { type: mongoose.Schema.Types.Boolean, default: false },
+    is_enabled: { type: mongoose.Schema.Types.Boolean, default: false },
+    is_activated: { type: mongoose.Schema.Types.Boolean, default: false },
+    is_deleted: { type: mongoose.Schema.Types.Boolean, default: false }
+}, { _id : false, created_on: false, modified_on: false });
+
 
 const UserSchema = new mongoose.Schema({
-    _id: { type: mongoose.Schema.Types.String, default: uuid.v4 },
-    first_name: { type: mongoose.Schema.Types.String, trim: true },
+    name: NameSchema,
     last_name: { type: mongoose.Schema.Types.String, trim: true },
-    email: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true, require:[true, "User must have an email address!"] },
+    gender: { type: mongoose.Schema.Types.String, trim: true },
+    email: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true, require:[true, "User must have an unique email address!"] },
     username: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true },
+    authentication: AuthenticationSchema,
     address: [AddressSchema],
     contact: [ContactSchema],
     social_profiles: [SocialProfilesSchema],
-    theme_code: { type: mongoose.Schema.Types.String, default: "" },
-    is_admin: { type: mongoose.Schema.Types.Boolean, default: false },
-    avatar: { type: mongoose.Schema.Types.String, trim: true },
-    secret_hash: { type: mongoose.Schema.Types.String },
-    salt_key: { type: mongoose.Schema.Types.String },
-    is_enabled: { type: mongoose.Schema.Types.Boolean, default: false },
-    is_activated: { type: mongoose.Schema.Types.Boolean, default: false },
-    is_deleted: { type: mongoose.Schema.Types.Boolean, default: false },
+    avatar: AvatarSchema,
+    meta_data: MetaDataSchema
+    
 
 }, {
     collection: "users",
