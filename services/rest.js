@@ -6,8 +6,8 @@ const expressRequestId = require('node-express-req-id')(
     });
 const winston = require('../utils/logger_utils/winston');
 const bunyan = require("../utils/logger_utils/bunyan")
-const config = require('config');
-const routes = require('./routes')
+const config = require("config");
+const userRoutes = require("../modules/user/routes")
 
 module.exports = () => {
 
@@ -61,7 +61,9 @@ module.exports = () => {
         next();
     });
 
-    routes(app);
+    app.use([
+        userRoutes
+    ])
     return new Promise((resolve, reject) => {
         try {
             const port = process.env.PORT || config.get('services').rest.port;
