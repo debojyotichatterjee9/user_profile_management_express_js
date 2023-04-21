@@ -7,7 +7,10 @@ const expressRequestId = require('node-express-req-id')(
 const winston = require('../utils/logger_utils/winston');
 const bunyan = require("../utils/logger_utils/bunyan")
 const config = require("config");
-const userRoutes = require("../modules/user/routes")
+const errorMessage = require("../utils/error/errorMessages.json");
+const authRoutes = require("../modules/authentication/routes");
+const userRoutes = require("../modules/user/routes");
+const genericRoutes = require("../modules/generic/routes");
 
 module.exports = () => {
 
@@ -61,9 +64,19 @@ module.exports = () => {
         next();
     });
 
+    // Handle module routes
     app.use([
-        userRoutes
-    ])
+        authRoutes,
+        userRoutes,
+        genericRoutes
+    ]);
+    // Handle 404 requests
+    app.use("*",(request, response) => {
+        return response.status(404).send({
+            trace_id: request.id,
+            error: errorMessage.pathNotFound
+        });
+    });
     return new Promise((resolve, reject) => {
         try {
             const port = process.env.PORT || config.get('services').rest.port;
