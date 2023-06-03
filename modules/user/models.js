@@ -14,8 +14,8 @@ const NameSchema = new mongoose.Schema({
 
 const AuthenticationSchema = new mongoose.Schema({
   user_id: { type: mongoose.Schema.Types.String, default: uuid.v4, unique: true },
-  secret_hash: { type: mongoose.Schema.Types.String },
-  salt_key: { type: mongoose.Schema.Types.String },
+  secret_hash: { type: mongoose.Schema.Types.String, default: null },
+  salt_key: { type: mongoose.Schema.Types.String, default: null },
 }, { _id: false, created_on: false, modified_on: false });
 
 const IdentificationSchema = new mongoose.Schema({
@@ -34,7 +34,8 @@ const TimezoneSchema = new mongoose.Schema({
 }, { _id: false, created_on: false, modified_on: false });
 
 const AddressSchema = new mongoose.Schema({
-  label: { type: mongoose.Schema.Types.String, uppercase: true, trim: true },
+  type: { type: mongoose.Schema.Types.String, uppercase: true, trim: true },
+  label: { type: mongoose.Schema.Types.String, trim: true },
   address: { type: mongoose.Schema.Types.Mixed },
   city: { type: mongoose.Schema.Types.String, trim: true, default: '' },
   state: { type: mongoose.Schema.Types.String, trim: true, default: '' },
@@ -47,7 +48,8 @@ const AddressSchema = new mongoose.Schema({
 }, { _id: false, created_on: false, modified_on: false });
 
 const ContactSchema = new mongoose.Schema({
-  label: { type: mongoose.Schema.Types.String, uppercase: true, trim: true },
+  type: { type: mongoose.Schema.Types.String, uppercase: true, trim: true },
+  label: { type: mongoose.Schema.Types.String, trim: true },
   country_code: { type: mongoose.Schema.Types.String, trim: true },
   number: { type: mongoose.Schema.Types.String, trim: true },
   is_default: { type: mongoose.Schema.Types.Boolean, default: false },
@@ -81,16 +83,16 @@ const MetaDataSchema = new mongoose.Schema({
 
 
 const UserSchema = new mongoose.Schema({
-  name: NameSchema,
+  name: { type: NameSchema, default: () => ({}) },
   email: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true, require: [true, "User must have an unique email address!"] },
   username: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true },
-  authentication: AuthenticationSchema,
+  authentication: { type: AuthenticationSchema, default: () => ({}) },
   identification: [IdentificationSchema],
   address: [AddressSchema],
   contact: [ContactSchema],
   social_profiles: [SocialProfilesSchema],
-  avatar: AvatarSchema,
-  meta_data: MetaDataSchema
+  avatar: { type: AvatarSchema, default: () => ({}) },
+  meta_data: { type: MetaDataSchema, default: () => ({}) }
 
 
 }, {
@@ -106,10 +108,17 @@ UserSchema.virtual("full_name").get(function() {
 });
 
 UserSchema.methods.setPassword = function(password) {
-  this.salt_key = crypto.randomBytes(24).toString("hex");
-  this.secret_hash = crypto
-    .pbkdf2Sync(password, this.salt_key, 1000, 64, "sha512")
-    .toString("hex");
+  try {
+    this.authentication.salt_key = crypto.randomBytes(24).toString("hex");
+    this.authentication.secret_hash = crypto
+      .pbkdf2Sync(password, this.authentication.salt_key, 1000, 64, "sha512")
+      .toString("hex");
+
+  }
+  catch (error) {
+    console.log(`ERROR --> ${error.message}`);
+    throw new Error(error.message)
+  }
 };
 
 UserSchema.methods.validatePassword = function(password) {
