@@ -8,7 +8,6 @@ const { User } = require("./models");
  */
 exports.saveUser = (payload) => {
   let [userInfo, userSaveResp] = [new User(), {}];
-  console.log(userInfo)
   userInfo.name = payload.name;
   userInfo.email = payload.email;
   userInfo.username = payload.username;
@@ -18,23 +17,29 @@ exports.saveUser = (payload) => {
   userInfo.social_profiles = payload.social_profiles;
   userInfo.avatar = payload.avatar;
   userInfo.meta_data = payload.meta_data;
-  userInfo.authentication.user_id = uuid.v4();
-  payload.authentication.password && payload.authentication.password.length > 0 ? userInfo.setPassword(payload.authentication.password) : userInfo.setPassword("Temporary@9999");
+  /* userInfo.authentication.user_id = uuid.v4(); */
+  try {
+    payload.authentication.password && payload.authentication.password.length > 0 ? userInfo.setPassword(payload.authentication.password) : userInfo.setPassword("Temporary@9999");
 
-  userInfo.save().then(data => {
-    console.log(data);
-    userSaveResp = {
+  } catch (error) {
+    console.log(`ERROR --> ${error.message}`);
+    return {
+      errorFlag: true,
+      errorMessage: "User creation failed! The user password could not be saved."
+    };
+  }
+
+  return userInfo.save().then(data => {
+    return {
       errorFlag: false,
       data: data
     };
   }).catch(error => {
-    console.log(error);
-    userSaveResp = {
+    return {
       errorFlag: true,
       errorMessage: error.message
     };
   });
-  return userSaveResp;
 }
 
 

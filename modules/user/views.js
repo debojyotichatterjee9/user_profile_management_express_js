@@ -26,13 +26,17 @@ exports.createUser = async (request, response) => {
       let userInfo = await userHelperObj.saveUser(payload);
       if (userInfo.errorFlag) {
         return response.status(400).send({
-          ref: ERROR,
+          ref: "USER_CREATION_ERROR",
           message: userInfo.errorMessage
         });
       }
       return response.status(201).send({
-        type: "success",
-        id: userInfo.data.id
+        ref: "SUCCESS",
+        data: {
+          user: {
+            id: userInfo.data.id
+          }
+        }
       });
     }
     else {
@@ -42,20 +46,6 @@ exports.createUser = async (request, response) => {
       })
     }
   }
-  console.log(newResp);
-  // if (!validation.status) {
-  //   return response.status(400).send({
-  //     type: "error",
-  //     message: validation.messages
-  //   })
-  // }
-  // else {
-  //   let userInfo = await userHelperObj.saveUser(payload);
-  //   return response.status(201).send({
-  //     type: "success",
-  //     id: userInfo.id
-  //   })
-  // }
 }
 
 
