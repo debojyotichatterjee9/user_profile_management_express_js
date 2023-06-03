@@ -13,7 +13,7 @@ const NameSchema = new mongoose.Schema({
 }, { _id: false, created_on: false, modified_on: false });
 
 const AuthenticationSchema = new mongoose.Schema({
-  user_id: { type: mongoose.Schema.Types.String, default: uuid.v4, unique: true },
+  user_id: { type: mongoose.Schema.Types.String, default: uuid.v4(), unique: true },
   secret_hash: { type: mongoose.Schema.Types.String },
   salt_key: { type: mongoose.Schema.Types.String },
 }, { _id: false, created_on: false, modified_on: false });
@@ -34,7 +34,8 @@ const TimezoneSchema = new mongoose.Schema({
 }, { _id: false, created_on: false, modified_on: false });
 
 const AddressSchema = new mongoose.Schema({
-  label: { type: mongoose.Schema.Types.String, uppercase: true, trim: true },
+  type: { type: mongoose.Schema.Types.String, uppercase: true, trim: true },
+  label: { type: mongoose.Schema.Types.String, trim: true },
   address: { type: mongoose.Schema.Types.Mixed },
   city: { type: mongoose.Schema.Types.String, trim: true, default: '' },
   state: { type: mongoose.Schema.Types.String, trim: true, default: '' },
@@ -47,7 +48,8 @@ const AddressSchema = new mongoose.Schema({
 }, { _id: false, created_on: false, modified_on: false });
 
 const ContactSchema = new mongoose.Schema({
-  label: { type: mongoose.Schema.Types.String, uppercase: true, trim: true },
+  type: { type: mongoose.Schema.Types.String, uppercase: true, trim: true },
+  label: { type: mongoose.Schema.Types.String, trim: true },
   country_code: { type: mongoose.Schema.Types.String, trim: true },
   number: { type: mongoose.Schema.Types.String, trim: true },
   is_default: { type: mongoose.Schema.Types.Boolean, default: false },

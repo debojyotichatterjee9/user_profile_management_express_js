@@ -1,7 +1,7 @@
 const bunyan = require("../../utils/logger_utils/bunyan");
 const winstonLogger = require("../../utils/logger_utils/winston");
 const log = bunyan.logger;
-const JOIUserValidation = require("../../utils/validators/joi_user_validator.js")
+const JOIUserValidationUtilObj = require("../../utils/validators/joi_user_validator.js")
 
 const userHelperObj = require("./helpers")
 const userValidatorUtilObj = require("../../utils/validators/user_validator");
@@ -17,9 +17,25 @@ exports.createUser = async (request, response) => {
   let [payload] = [request.body];
 
   // checking the validation of the provided payload
-  // let validatorObj = new userValidatorUtilObj.PayloadValidation(payload);
-  // validation = await validatorObj.isValidPayload();
-  let newResp = JOIUserValidation.userValidation(payload);
+  let validation = JOIUserValidationUtilObj.userValidation(payload);
+  if (validation.error) {
+    return 0;
+  }
+  else {
+    if (validation.value) {
+      let userInfo = await userHelperObj.saveUser(payload);
+      return response.status(201).send({
+        type: "success",
+        id: userInfo.id
+      })
+    }
+    else {
+      return response.status(400).send({
+        type: "error",
+        message: "Validation does not return a vvalid value."
+      })
+    }
+  }
   console.log(newResp);
   // if (!validation.status) {
   //   return response.status(400).send({
