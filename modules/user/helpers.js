@@ -1,3 +1,4 @@
+const uuid = require("uuid");
 const { User } = require("./models");
 
 /**
@@ -6,17 +7,34 @@ const { User } = require("./models");
  * @returns 
  */
 exports.saveUser = (payload) => {
-  let userInfo = new User();
-  userInfo.name.name_prefix = payload.name.first_name;
-  userInfo.name.first_name = payload.name.first_name;
-  userInfo.name.last_name = payload.name.first_name;
-  userInfo.name.name_suffix = payload.name.first_name;
+  let [userInfo, userSaveResp] = [new User(), {}];
+  console.log(userInfo)
+  userInfo.name = payload.name;
   userInfo.email = payload.email;
   userInfo.username = payload.username;
-  payload.authentication.password && payload.password.length > 0 ? userInfo.setPassword(payload.authentication.password) : userInfo.setPassword("Temporary@9999");
+  userInfo.identification = payload.identification;
+  userInfo.address = payload.address;
+  userInfo.contact = payload.contact;
+  userInfo.social_profiles = payload.social_profiles;
+  userInfo.avatar = payload.avatar;
+  userInfo.meta_data = payload.meta_data;
+  userInfo.authentication.user_id = uuid.v4();
+  payload.authentication.password && payload.authentication.password.length > 0 ? userInfo.setPassword(payload.authentication.password) : userInfo.setPassword("Temporary@9999");
 
-  userInfo.save();
-  return userInfo;
+  userInfo.save().then(data => {
+    console.log(data);
+    userSaveResp = {
+      errorFlag: false,
+      data: data
+    };
+  }).catch(error => {
+    console.log(error);
+    userSaveResp = {
+      errorFlag: true,
+      errorMessage: error.message
+    };
+  });
+  return userSaveResp;
 }
 
 

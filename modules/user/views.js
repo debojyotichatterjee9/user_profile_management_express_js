@@ -24,15 +24,21 @@ exports.createUser = async (request, response) => {
   else {
     if (validation.value) {
       let userInfo = await userHelperObj.saveUser(payload);
+      if (userInfo.errorFlag) {
+        return response.status(400).send({
+          ref: ERROR,
+          message: userInfo.errorMessage
+        });
+      }
       return response.status(201).send({
         type: "success",
-        id: userInfo.id
-      })
+        id: userInfo.data.id
+      });
     }
     else {
       return response.status(400).send({
         type: "error",
-        message: "Validation does not return a vvalid value."
+        message: "Validation does not return a valid value."
       })
     }
   }

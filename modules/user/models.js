@@ -13,9 +13,9 @@ const NameSchema = new mongoose.Schema({
 }, { _id: false, created_on: false, modified_on: false });
 
 const AuthenticationSchema = new mongoose.Schema({
-  user_id: { type: mongoose.Schema.Types.String, default: uuid.v4(), unique: true },
-  secret_hash: { type: mongoose.Schema.Types.String },
-  salt_key: { type: mongoose.Schema.Types.String },
+  user_id: { type: mongoose.Schema.Types.String, default: uuid.v4, unique: true },
+  secret_hash: { type: mongoose.Schema.Types.String, default: null },
+  salt_key: { type: mongoose.Schema.Types.String, default: null },
 }, { _id: false, created_on: false, modified_on: false });
 
 const IdentificationSchema = new mongoose.Schema({
@@ -86,13 +86,13 @@ const UserSchema = new mongoose.Schema({
   name: NameSchema,
   email: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true, require: [true, "User must have an unique email address!"] },
   username: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true },
-  authentication: AuthenticationSchema,
+  authentication: {AuthenticationSchema},
   identification: [IdentificationSchema],
   address: [AddressSchema],
   contact: [ContactSchema],
   social_profiles: [SocialProfilesSchema],
-  avatar: AvatarSchema,
-  meta_data: MetaDataSchema
+  avatar: {AvatarSchema},
+  meta_data: {MetaDataSchema}
 
 
 }, {
@@ -108,10 +108,19 @@ UserSchema.virtual("full_name").get(function() {
 });
 
 UserSchema.methods.setPassword = function(password) {
-  this.salt_key = crypto.randomBytes(24).toString("hex");
-  this.secret_hash = crypto
-    .pbkdf2Sync(password, this.salt_key, 1000, 64, "sha512")
-    .toString("hex");
+  console.log(this)
+  console.log(this.authentication)
+  console.log(typeof(this.authentication))
+  try {
+    this.authentication.salt_key = crypto.randomBytes(24).toString("hex");
+    this.authentication.secret_hash = crypto
+      .pbkdf2Sync(password, this.salt_key, 1000, 64, "sha512")
+      .toString("hex");
+
+  }
+  catch (error) {
+    console.log(error.message);
+  }
 };
 
 UserSchema.methods.validatePassword = function(password) {
