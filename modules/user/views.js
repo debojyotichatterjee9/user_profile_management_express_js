@@ -4,7 +4,8 @@ const log = bunyan.logger;
 const JOIUserValidation = require("../../utils/validators/joi_user_validator.js")
 
 const userHelperObj = require("./helpers")
-const userValidatorUtilObj = require("../../utils/validators/user_validator")
+const userValidatorUtilObj = require("../../utils/validators/user_validator");
+const { options } = require("joi");
 
 /**
  * CREATE USER
@@ -19,7 +20,7 @@ exports.createUser = async (request, response) => {
   // let validatorObj = new userValidatorUtilObj.PayloadValidation(payload);
   // validation = await validatorObj.isValidPayload();
   let newResp = JOIUserValidation.userValidation(payload);
-  console.log(newResp.error.details);
+  console.log(newResp);
   // if (!validation.status) {
   //   return response.status(400).send({
   //     type: "error",
