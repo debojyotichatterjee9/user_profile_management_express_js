@@ -1,12 +1,11 @@
 const bunyan = require("../../utils/logger_utils/bunyan");
 const winstonLogger = require("../../utils/logger_utils/winston");
 const log = bunyan.logger;
-const JOIUserValidationUtilObj = require("../../utils/validators/joi_user_validator.js")
+const JOIUserValidationUtilObj = require("../../utils/validators/joi_user_validator.js");
 
-const userHelperObj = require("./helpers")
+const userHelperObj = require("./helpers");
 const userValidatorUtilObj = require("../../utils/validators/user_validator");
-const { options } = require("joi");
-
+const createHttpError = require("http-errors");
 /**
  * CREATE USER
  * @param {Object} request 
@@ -18,12 +17,13 @@ exports.createUser = async (request, response) => {
 
   // checking the validation of the provided payload
   let validation = JOIUserValidationUtilObj.userValidation(payload);
-  console.log(validation)
   if (validation.error) {
-    return response.status(400).send({
-      ref: "ERROR",
-      error: validation.error.details
-    });
+    // return response.status(400).send({
+    //   ref: "ERROR",
+    //   error: validation.error.details
+    // });
+    const error =  new createHttpError.BadRequest(validation.error.details);
+    return response.send(error)
   }
   else {
     if (validation.value) {
