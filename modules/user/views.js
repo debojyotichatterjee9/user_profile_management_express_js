@@ -18,8 +18,12 @@ exports.createUser = async (request, response) => {
 
   // checking the validation of the provided payload
   let validation = JOIUserValidationUtilObj.userValidation(payload);
+  console.log(validation)
   if (validation.error) {
-    return 0;
+    return response.status(400).send({
+      ref: "ERROR",
+      error: validation.error.details
+    });
   }
   else {
     if (validation.value) {
@@ -42,7 +46,7 @@ exports.createUser = async (request, response) => {
     else {
       return response.status(400).send({
         type: "error",
-        message: "Validation does not return a valid value."
+        message: "Validation did not return a valid value."
       })
     }
   }
