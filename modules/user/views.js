@@ -5,7 +5,7 @@ const JOIUserValidationUtilObj = require("../../utils/validators/joi_user_valida
 
 const userHelperObj = require("./helpers");
 const userValidatorUtilObj = require("../../utils/validators/user_validator");
-const createHttpError = require("http-errors");
+const HTTP_ERRORS = require('../../errors/generic-codes.js')
 /**
  * CREATE USER
  * @param {Object} request 
@@ -18,12 +18,11 @@ exports.createUser = async (request, response) => {
   // checking the validation of the provided payload
   let validation = JOIUserValidationUtilObj.userValidation(payload);
   if (validation.error) {
-    // return response.status(400).send({
-    //   ref: "ERROR",
-    //   error: validation.error.details
-    // });
-    const error =  new createHttpError.BadRequest(validation.error.details);
-    return response.send(error)
+    // TODO: make this error body standard
+    return response.status(HTTP_ERRORS.BAD_REQUEST.statusCode).send({
+      ref: errors.BAD_REQUEST.message,
+      error: validation.error.details
+    });
   }
   else {
     if (validation.value) {
