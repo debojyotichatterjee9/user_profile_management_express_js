@@ -83,6 +83,7 @@ const UserSchema = new mongoose.Schema({
   name: { type: NameSchema, default: () => ({}) },
   email: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true, require: [true, 'User must have an unique email address!'] },
   username: { type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true },
+  organization: { type: mongoose.Schema.Types.String, default: uuid.NIL },
   authentication: { type: AuthenticationSchema, default: () => ({}) },
   identification: [IdentificationSchema],
   address: [AddressSchema],
