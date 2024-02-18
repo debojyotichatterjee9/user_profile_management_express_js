@@ -1,4 +1,4 @@
-const JOI = require('joi')
+const JOI = require('joi');
 
 exports.userValidation = (payload) => {
   const JOISchema = JOI.object({
@@ -10,6 +10,7 @@ exports.userValidation = (payload) => {
     }),
     email: JOI.string().required().email(),
     username: JOI.string().empty(''),
+    organization_id: JOI.string(),
     authentication: JOI.object({
       password: JOI.string().required()
     }),
@@ -59,7 +60,7 @@ exports.userValidation = (payload) => {
       theme_code: JOI.string().empty(''),
       is_super_admin: JOI.boolean().empty('')
     })
-  })
-  const JOIValidateOptions = { abortEarly: false }
-  return JOISchema.validate(payload, JOIValidateOptions)
-}
+  });
+  const JOIValidateOptions = { abortEarly: false };
+  return JOISchema.validate(payload, JOIValidateOptions);
+};

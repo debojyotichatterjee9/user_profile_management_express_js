@@ -10,13 +10,16 @@ exports.saveUser = (payload) => {
   userInfo.name = payload.name;
   userInfo.email = payload.email;
   userInfo.username = payload.username;
+  if (payload.organization_id) {
+    // TODO: need to add a check if the organization exists
+    userInfo.organization_id = payload.organization_id;
+  }
   userInfo.identification = payload.identification;
   userInfo.address = payload.address;
   userInfo.contact = payload.contact;
   userInfo.social_profiles = payload.social_profiles;
   userInfo.avatar = payload.avatar;
   userInfo.meta_data = payload.meta_data;
-  /* userInfo.authentication.user_id = uuid.v4(); */
   try {
     payload.authentication.password && payload.authentication.password.length > 0 ? userInfo.setPassword(payload.authentication.password) : userInfo.setPassword('Temporary@9999');
   } catch (error) {
