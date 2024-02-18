@@ -1,5 +1,4 @@
-const JOI = require("joi");
-
+const JOI = require('joi')
 
 exports.userValidation = (payload) => {
   const JOISchema = JOI.object({
@@ -46,21 +45,21 @@ exports.userValidation = (payload) => {
     }),
     social_profiles: JOI.array().items({
       label: JOI.string().empty(''),
-      link: JOI.string().empty(''),
+      link: JOI.string().empty('')
     }),
     avatar: JOI.object({
       large: JOI.string().empty(''),
       medium: JOI.string().empty(''),
       small: JOI.string().empty(''),
-      thumbnail: JOI.string().empty(''),
+      thumbnail: JOI.string().empty('')
     }),
     meta_data: JOI.object({
       gender: JOI.string().empty(''),
       dob: JOI.string().empty(''),
       theme_code: JOI.string().empty(''),
-      is_super_admin: JOI.boolean().empty(''),
+      is_super_admin: JOI.boolean().empty('')
     })
-  });
+  })
   const JOIValidateOptions = { abortEarly: false }
   return JOISchema.validate(payload, JOIValidateOptions)
 }

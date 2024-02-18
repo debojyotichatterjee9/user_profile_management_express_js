@@ -1,13 +1,12 @@
-const uuid = require("uuid");
-const { User } = require("./models");
+const { User } = require('./models');
 
 /**
  * SAVE USER
- * @param {Object} payload 
- * @returns 
+ * @param {Object} payload
+ * @returns
  */
 exports.saveUser = (payload) => {
-  let [userInfo, userSaveResp] = [new User(), {}];
+  const userInfo = new User();
   userInfo.name = payload.name;
   userInfo.email = payload.email;
   userInfo.username = payload.username;
@@ -19,20 +18,19 @@ exports.saveUser = (payload) => {
   userInfo.meta_data = payload.meta_data;
   /* userInfo.authentication.user_id = uuid.v4(); */
   try {
-    payload.authentication.password && payload.authentication.password.length > 0 ? userInfo.setPassword(payload.authentication.password) : userInfo.setPassword("Temporary@9999");
-
+    payload.authentication.password && payload.authentication.password.length > 0 ? userInfo.setPassword(payload.authentication.password) : userInfo.setPassword('Temporary@9999');
   } catch (error) {
     console.log(`ERROR --> ${error.message}`);
     return {
       errorFlag: true,
-      errorMessage: "User creation failed! The user password could not be saved."
+      errorMessage: 'User creation failed! The user password could not be saved.'
     };
   }
 
   return userInfo.save().then(data => {
     return {
       errorFlag: false,
-      data: data
+      data
     };
   }).catch(error => {
     return {
@@ -40,17 +38,15 @@ exports.saveUser = (payload) => {
       errorMessage: error.message
     };
   });
-}
-
-
+};
 
 exports.getUserInfoById = async (userId) => {
   try {
-    let userInfo = await User.findById(userId).select([
-      "-salt_key",
-      "-secret_hash",
-      "-__v",
-      "-is_deleted"
+    const userInfo = await User.findById(userId).select([
+      '-salt_key',
+      '-secret_hash',
+      '-__v',
+      '-is_deleted'
     ]);
     if (!userInfo) {
       return false;
@@ -61,15 +57,13 @@ exports.getUserInfoById = async (userId) => {
   }
 };
 
-
 /**
  * UPDATE USER
- * @param {Object} payload 
- * @returns 
+ * @param {Object} payload
+ * @returns
  */
 exports.updateUser = async (userId, payload) => {
-
-  let userInfo = await User.findById(userId);
+  const userInfo = await User.findById(userId);
   if (userInfo) {
     userInfo.first_name = payload.first_name;
     userInfo.last_name = payload.last_name;
@@ -81,13 +75,12 @@ exports.updateUser = async (userId, payload) => {
     userInfo.theme_code = payload.theme_code;
     userInfo.is_admin = payload.is_admin;
     userInfo.avatar = payload.avatar;
-  }
-  else {
+  } else {
     return {
-      type: "failed",
-      message: "User not found."
-    }
+      type: 'failed',
+      message: 'User not found.'
+    };
   }
   userInfo.save();
   return userInfo;
-}
+};
