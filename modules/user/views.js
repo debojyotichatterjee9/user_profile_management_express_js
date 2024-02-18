@@ -1,109 +1,100 @@
-const bunyan = require("../../utils/logger_utils/bunyan");
-const winstonLogger = require("../../utils/logger_utils/winston");
-const log = bunyan.logger;
-const JOIUserValidationUtilObj = require("../../utils/validators/joi_user_validator.js")
+const JOIUserValidationUtilObj = require('../../utils/validators/joi_user_validator.js');
 
-const userHelperObj = require("./helpers")
-const userValidatorUtilObj = require("../../utils/validators/user_validator");
-const { options } = require("joi");
-
+const userHelperObj = require('./helpers');
+const userValidatorUtilObj = require('../../utils/validators/user_validator');
+const HTTP_ERRORS = require('../../errors/generic-codes.js');
 /**
  * CREATE USER
- * @param {Object} request 
- * @param {Object} response 
+ * @param {Object} request
+ * @param {Object} response
  */
 exports.createUser = async (request, response) => {
-
-  let [payload] = [request.body];
+  const [payload] = [request.body];
 
   // checking the validation of the provided payload
-  let validation = JOIUserValidationUtilObj.userValidation(payload);
+  const validation = JOIUserValidationUtilObj.userValidation(payload);
   if (validation.error) {
-    return 0;
-  }
-  else {
+    // TODO: make this error body standard
+    return response.status(HTTP_ERRORS.BAD_REQUEST.statusCode).send({
+      ref: HTTP_ERRORS.BAD_REQUEST.message,
+      error: validation.error.details
+    });
+  } else {
     if (validation.value) {
-      let userInfo = await userHelperObj.saveUser(payload);
+      const userInfo = await userHelperObj.saveUser(payload);
       if (userInfo.errorFlag) {
         return response.status(400).send({
-          ref: "USER_CREATION_ERROR",
+          ref: 'USER_CREATION_ERROR',
           message: userInfo.errorMessage
         });
       }
       return response.status(201).send({
-        ref: "SUCCESS",
+        ref: 'SUCCESS',
         data: {
           user: {
             id: userInfo.data.id
           }
         }
       });
-    }
-    else {
+    } else {
       return response.status(400).send({
-        type: "error",
-        message: "Validation does not return a valid value."
-      })
+        type: 'error',
+        message: 'Validation did not return a valid value.'
+      });
     }
   }
-}
-
+};
 
 /**
  * UPDATE USER
- * @param {Object} request 
- * @param {Object} response 
+ * @param {Object} request
+ * @param {Object} response
  */
 exports.updateUser = async (request, response) => {
-
-  let [userId, payload] = [request.params.userId, request.body];
+  const [userId, payload] = [request.params.userId, request.body];
 
   // checking the validation of the provided payload
-  let validatorObj = new userValidatorUtilObj.PayloadValidation();
+  const validatorObj = new userValidatorUtilObj.PayloadValidation();
 
   if (payload.email && await !validatorObj.isValidEmail(payload.email)) {
     return response.status(400).send({
-      type: "email",
-      message: "Invalid email supplied."
-    })
+      type: 'email',
+      message: 'Invalid email supplied.'
+    });
   }
   if (payload.email && await validatorObj.isDuplicateEmail(payload.email, userId)) {
     return response.status(400).send({
-      type: "email",
-      message: "Supplied email already exists."
-    })
+      type: 'email',
+      message: 'Supplied email already exists.'
+    });
   }
   if (payload.username && await !validatorObj.isValidUsername(payload.username)) {
     return response.status(400).send({
-      type: "username",
-      message: "Invalid username supplied."
-    })
+      type: 'username',
+      message: 'Invalid username supplied.'
+    });
   }
   if (payload.username && await validatorObj.isDuplicateUsername(payload.username)) {
     return response.status(400).send({
-      type: "username",
-      message: "Supplied username already exists."
-    })
-  }
-  else {
-    let updateResp = await userHelperObj.updateUser(userId, payload);
+      type: 'username',
+      message: 'Supplied username already exists.'
+    });
+  } else {
+    const updateResp = await userHelperObj.updateUser(userId, payload);
     if (updateResp.id) {
       return response.status(200).send({
-        type: "success",
+        type: 'success',
         id: updateResp.id
       });
-    }
-    else {
+    } else {
       return response.status(400).send({
         type: updateResp.type,
         message: updateResp.message
-      })
+      });
     }
-
   }
-}
-
+};
 
 exports.getUserList = (request, response) => {
-  console.log("Fetching users...")
-}
+  console.log('Fetching users...');
+};

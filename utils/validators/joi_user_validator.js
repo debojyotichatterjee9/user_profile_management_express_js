@@ -1,67 +1,65 @@
-const { options } = require("joi");
-const JOI = require("joi");
-
+const JOI = require('joi')
 
 exports.userValidation = (payload) => {
   const JOISchema = JOI.object({
     name: JOI.object({
-      name_prefix: JOI.string(),
+      name_prefix: JOI.string().empty(''),
       first_name: JOI.string(),
       last_name: JOI.string(),
-      name_suffix: JOI.string()
+      name_suffix: JOI.string().empty('')
     }),
-    email: JOI.string(),
-    username: JOI.string(),
+    email: JOI.string().required().email(),
+    username: JOI.string().empty(''),
     authentication: JOI.object({
       password: JOI.string().required()
     }),
     identification: JOI.array().items({
-      type: JOI.string(),
-      value: JOI.string()
+      type: JOI.string().empty(''),
+      value: JOI.string().empty('')
     }),
     address: JOI.array().items({
-      type: JOI.string(),
-      label: JOI.string(),
-      address: JOI.string(),
-      city: JOI.string(),
-      state: JOI.string(),
-      country: JOI.string(),
-      country_code: JOI.string(),
-      zipcode: JOI.string(),
+      type: JOI.string().empty(''),
+      label: JOI.string().empty(''),
+      address: JOI.string().empty(''),
+      city: JOI.string().empty(''),
+      state: JOI.string().empty(''),
+      country: JOI.string().empty(''),
+      country_code: JOI.string().empty(''),
+      zipcode: JOI.string().empty(''),
       location: JOI.object({
-        latitude: JOI.string(),
-        longitude: JOI.string()
+        latitude: JOI.string().empty(''),
+        longitude: JOI.string().empty('')
       }),
       timezone: JOI.object({
-        offset: JOI.string(),
-        zone: JOI.string()
+        offset: JOI.string().empty(''),
+        zone: JOI.string().empty('')
       }),
-      is_default: JOI.boolean()
+      is_default: JOI.boolean().empty('')
     }),
     contact: JOI.array().items({
-      type: JOI.string(),
-      label: JOI.string(),
-      country_code: JOI.string(),
-      number: JOI.string(),
-      is_default: JOI.boolean()
+      type: JOI.string().empty(''),
+      label: JOI.string().empty(''),
+      country_code: JOI.string().empty(''),
+      number: JOI.string().empty(''),
+      is_default: JOI.boolean().empty('')
     }),
     social_profiles: JOI.array().items({
-      label: JOI.string(),
-      link: JOI.string(),
+      label: JOI.string().empty(''),
+      link: JOI.string().empty('')
     }),
     avatar: JOI.object({
-      large: JOI.string(),
-      medium: JOI.string(),
-      small: JOI.string(),
-      thumbnail: JOI.string(),
+      large: JOI.string().empty(''),
+      medium: JOI.string().empty(''),
+      small: JOI.string().empty(''),
+      thumbnail: JOI.string().empty('')
     }),
     meta_data: JOI.object({
-      gender: JOI.string(),
-      dob: JOI.string(),
-      theme_code: JOI.string(),
-      is_super_admin: JOI.boolean(),
+      gender: JOI.string().empty(''),
+      dob: JOI.string().empty(''),
+      theme_code: JOI.string().empty(''),
+      is_super_admin: JOI.boolean().empty('')
     })
-  });
+  })
   const JOIValidateOptions = { abortEarly: false }
   return JOISchema.validate(payload, JOIValidateOptions)
 }
