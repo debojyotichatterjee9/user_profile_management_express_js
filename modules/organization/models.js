@@ -107,3 +107,4 @@ const OrganizationSchema = new mongoose.Schema(
 OrganizationSchema.virtual('id').get(function () {
   return String(this._id);
 });
+exports.Organization = mongoose.model('Organization', OrganizationSchema);
