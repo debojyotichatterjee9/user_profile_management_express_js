@@ -1,5 +1,6 @@
 const HTTP_ERRORS = require('../../errors/generic-codes.js');
 const createOrgValidatorUtilObj = require('../../utils/validators/joi_create_organization_validator.js')
+const organizationHelperObj = require('./helpers');
 
 exports.createOrganization = async (request, response) => {
     const [payload] = [request.body];
@@ -13,7 +14,7 @@ exports.createOrganization = async (request, response) => {
         });
     } else {
         if (validation.value) {
-            const organizationInfo = await userHelperObj.createOrganization(payload);
+            const organizationInfo = await organizationHelperObj.createOrganization(payload);
             if (organizationInfo.errorFlag) {
                 return response.status(400).send({
                     ref: 'ORGANIZATION_CREATION_ERROR',
