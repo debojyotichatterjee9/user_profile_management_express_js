@@ -87,7 +87,7 @@ const UserSchema = new mongoose.Schema({
   name: { type: NameSchema, default: () => ({}) },
   email: {
     type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true, require: [true, 'User must have an unique email address!'],
-  },
+    unique: [true, 'User with provided email address already exists!']},
   username: {
     type: mongoose.Schema.Types.String, trim: true, lowercase: true, index: true,
   },
