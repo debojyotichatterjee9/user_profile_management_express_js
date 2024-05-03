@@ -16,7 +16,7 @@ exports.createOrganization = async (payload) => {
     } catch (error) {
         return {
             errorFlag: true,
-            errorMessage: error.message,
+            message: error.message,
         };
     }
 };

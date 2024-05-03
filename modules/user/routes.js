@@ -12,7 +12,7 @@ router.route('/user-profile-management/user/list')
   .all(errorHandler.handle405);
 
 router.route('/user-profile-management/user/:userId')
-  .put(userViewObj.updateUser)
+  .patch(userViewObj.updateUser)
   .all(errorHandler.handle405);
 
 module.exports = router;

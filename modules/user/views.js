@@ -1,8 +1,9 @@
-const JOIUserValidationUtilObj = require("../../utils/validators/joi_user_validator.js");
+const createUserValidationObj = require("../../utils/validators/joi_create_user_validator.js");
+const updateUserValidationObj = require("../../utils/validators/joi_update_user_validator.js")
 
 const userHelperObj = require("./helpers");
 const userValidatorUtilObj = require("../../utils/validators/user_validator");
-const HTTP_ERRORS = require("../../errors/generic-codes.js");
+const HTTP_RESPONSE = require("../../constants/http-generic-codes.js");
 const organizationValidatorObj = require("../../utils/validators/organization_validator");
 /**
  * CREATE USER
@@ -10,52 +11,71 @@ const organizationValidatorObj = require("../../utils/validators/organization_va
  * @param {Object} response
  */
 exports.createUser = async (request, response) => {
-  const [payload] = [request.body];
+  try {
+    const [payload] = [request.body];
 
-  // checking the validation of the provided payload
-  const validation = JOIUserValidationUtilObj.userValidation(payload);
-  if (validation.error) {
-    // TODO: make this error body standard
-    return response.status(HTTP_ERRORS.BAD_REQUEST.statusCode).send({
-      ref: HTTP_ERRORS.BAD_REQUEST.message,
-      error: validation.error.details,
-    });
-  } else {
-    if (validation.value) {
-      if (payload.organization_id) {
-        const validOrganizationId =
-          await organizationValidatorObj.checkValidOrganizationId(
-            payload.organization_id
-          );
-        if (!validOrganizationId) {
-          return response.status(HTTP_ERRORS.NOT_FOUND.statusCode).send({
-            ref: HTTP_ERRORS.NOT_FOUND.ref,
-            error: HTTP_ERRORS.NOT_FOUND.error,
-            message: `Organization - ${HTTP_ERRORS.NOT_FOUND.message}`,
-          });
-        }
-      }
-      const userInfo = await userHelperObj.saveUser(payload);
-      if (userInfo.errorFlag) {
-        return response.status(400).send({
-          ref: "USER_CREATION_ERROR",
-          message: userInfo.errorMessage,
-        });
-      }
-      return response.status(201).send({
-        ref: "SUCCESS",
-        data: {
-          user: {
-            id: userInfo.data.id,
-          },
-        },
+    // checking the validation of the provided payload
+    const validationResp = createUserValidationObj.payloadValidation(payload);
+    console.log(payload)
+    if (validationResp.error) {
+      // TODO: make this error body standard
+      return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+        ref: HTTP_RESPONSE.BAD_REQUEST.message,
+        error: HTTP_RESPONSE.BAD_REQUEST.error,
+        message: HTTP_RESPONSE.BAD_REQUEST.message,
+        info: validationResp.error.details
       });
     } else {
-      return response.status(400).send({
-        type: "error",
-        message: "Validation did not return a valid value.",
-      });
+      if (validationResp.value) {
+        if (payload.organization_id) {
+          const validOrganizationId =
+            await organizationValidatorObj.checkValidOrganizationId(
+              payload.organization_id
+            );
+          if (!validOrganizationId) {
+            return response.status(HTTP_RESPONSE.NOT_FOUND.statusCode).send({
+              ref: HTTP_RESPONSE.NOT_FOUND.ref,
+              error: HTTP_RESPONSE.NOT_FOUND.error,
+              message: HTTP_RESPONSE.NOT_FOUND.message,
+              info: `Organization - ${HTTP_RESPONSE.NOT_FOUND.message}`
+            });
+          }
+        }
+        const createUserResp = await userHelperObj.saveUser(payload);
+        if (createUserResp.errorFlag) {
+          return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+            ref: "USER_CREATION_ERROR",
+            error: HTTP_RESPONSE.BAD_REQUEST.error,
+            message: HTTP_RESPONSE.BAD_REQUEST.message,
+            info: createUserResp.message,
+          });
+        }
+        return response.status(201).send({
+          ref: "SUCCESS",
+          data: {
+            user: {
+              id: createUserResp.userInfo.authentication.id,
+            },
+          },
+        });
+      } else {
+        return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+          ref: HTTP_RESPONSE.BAD_REQUEST.ref,
+          error: HTTP_RESPONSE.BAD_REQUEST.error,
+          message: HTTP_RESPONSE.BAD_REQUEST.message,
+          info: "Validation did not return a valid value.",
+        });
+      }
     }
+  } catch (error) {
+    return response
+      .status(HTTP_RESPONSE.INTERNAL_SERVER_ERROR.statusCode)
+      .send({
+        ref: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.ref,
+        error: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.error,
+        message: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.message,
+        info: error.message
+      });
   }
 };
 
@@ -65,59 +85,50 @@ exports.createUser = async (request, response) => {
  * @param {Object} response
  */
 exports.updateUser = async (request, response) => {
-  const [userId, payload] = [request.params.userId, request.body];
+  try {
 
-  // checking the validation of the provided payload
-  const validatorObj = new userValidatorUtilObj.PayloadValidation();
+    const [userId, payload] = [request.params.userId, request.body];
 
-  if (payload.email && (await !validatorObj.isValidEmail(payload.email))) {
-    return response.status(400).send({
-      type: "email",
-      message: "Invalid email supplied.",
-    });
-  }
-  if (
-    payload.email &&
-    (await validatorObj.isDuplicateEmail(payload.email, userId))
-  ) {
-    return response.status(400).send({
-      type: "email",
-      message: "Supplied email already exists.",
-    });
-  }
-  if (
-    payload.username &&
-    (await !validatorObj.isValidUsername(payload.username))
-  ) {
-    return response.status(400).send({
-      type: "username",
-      message: "Invalid username supplied.",
-    });
-  }
-  if (
-    payload.username &&
-    (await validatorObj.isDuplicateUsername(payload.username))
-  ) {
-    return response.status(400).send({
-      type: "username",
-      message: "Supplied username already exists.",
-    });
-  } else {
-    const updateResp = await userHelperObj.updateUser(userId, payload);
-    if (updateResp.id) {
-      return response.status(200).send({
-        type: "success",
-        id: updateResp.id,
-      });
-    } else {
-      return response.status(400).send({
-        type: updateResp.type,
-        message: updateResp.message,
+    // checking the validation of the provided payload
+    // const validatorObj = new userValidatorUtilObj.PayloadValidation();
+    const validationResp = updateUserValidationObj.payloadValidation(payload);
+
+    if (validationResp.error) {
+      return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+        ref: HTTP_RESPONSE.BAD_REQUEST.message,
+        error: HTTP_RESPONSE.BAD_REQUEST.error,
+        message: HTTP_RESPONSE.BAD_REQUEST.message,
+        info: validationResp.error.details
       });
     }
+    else {
+      const updateUserResp = await userHelperObj.updateUser(userId, payload);
+      if (updateUserResp.errorFlag) {
+        return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+          ref: HTTP_RESPONSE.BAD_REQUEST.ref,
+          error: HTTP_RESPONSE.BAD_REQUEST.error,
+          message: HTTP_RESPONSE.BAD_REQUEST.message,
+          info: updateUserResp.message
+        });
+      } return response.status(200).send({
+        type: "SUCCESS",
+        data: {
+          user: updateUserResp.userInfo
+        }
+      });
+    }
+  } catch (error) {
+    console.log(error)
+    return response
+      .status(HTTP_RESPONSE.INTERNAL_SERVER_ERROR.statusCode)
+      .send({
+        ref: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.ref,
+        error: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.error,
+        message: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.message,
+        info: error.message
+      });
   }
 };
-
 exports.getUserList = (request, response) => {
   console.log("Fetching users...");
 };
