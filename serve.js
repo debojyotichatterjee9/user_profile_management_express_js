@@ -44,8 +44,8 @@ const setupWorkerProcesses = () => {
 const setUpExpress = () => {
   const mongodbURI = config.get('database').mongo_uri;
   mongoose.connect(mongodbURI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useNewUrlParser: true,
+    // useUnifiedTopology: true,
     // useFindAndModify: false,
     retryWrites: false,
     // useCreateIndex: true

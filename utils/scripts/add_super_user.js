@@ -8,7 +8,7 @@ const userModel = require("../../modules/user/models");
 //  Connect to database
 mongoose.connect(config.get('database').mongo_uri, {
     useNewUrlParser: true,
-    useUnifiedTopology: true,
+    // useUnifiedTopology: true,
 });
 const email = 'usermanagement.superadmin@guerrillamail.info';
 userModel.User.findOne({

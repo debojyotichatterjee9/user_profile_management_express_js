@@ -1,4 +1,4 @@
-const { User } = require('./models');
+const { User } = require("./models");
 
 /**
  * SAVE USER
@@ -10,43 +10,53 @@ exports.saveUser = (payload) => {
   userInfo.name = payload.name;
   userInfo.email = payload.email;
   userInfo.username = payload.username;
+  if (payload.organization_id) {
+    // TODO: need to add a check if the organization exists
+    userInfo.organization_id = payload.organization_id;
+  }
   userInfo.identification = payload.identification;
   userInfo.address = payload.address;
   userInfo.contact = payload.contact;
   userInfo.social_profiles = payload.social_profiles;
   userInfo.avatar = payload.avatar;
   userInfo.meta_data = payload.meta_data;
-  /* userInfo.authentication.user_id = uuid.v4(); */
   try {
-    payload.authentication.password && payload.authentication.password.length > 0 ? userInfo.setPassword(payload.authentication.password) : userInfo.setPassword('Temporary@9999');
+    payload.authentication.password &&
+    payload.authentication.password.length > 0
+      ? userInfo.setPassword(payload.authentication.password)
+      : userInfo.setPassword("Temporary@9999");
   } catch (error) {
     console.log(`ERROR --> ${error.message}`);
     return {
       errorFlag: true,
-      errorMessage: 'User creation failed! The user password could not be saved.'
+      errorMessage:
+        "User creation failed! The user password could not be saved.",
     };
   }
 
-  return userInfo.save().then(data => {
-    return {
-      errorFlag: false,
-      data
-    };
-  }).catch(error => {
-    return {
-      errorFlag: true,
-      errorMessage: error.message
-    };
-  });
+  return userInfo
+    .save()
+    .then((data) => {
+      return {
+        errorFlag: false,
+        data,
+      };
+    })
+    .catch((error) => {
+      return {
+        errorFlag: true,
+        errorMessage: error.message,
+      };
+    });
 };
 
 exports.getUserInfoById = async (userId) => {
   try {
     const userInfo = await User.findById(userId).select([
-      '-salt_key',
-      '-secret_hash',
-      '-__v',
-      '-is_deleted'
+      "-salt_key",
+      "-secret_hash",
+      "-__v",
+      "-is_deleted",
     ]);
     if (!userInfo) {
       return false;
@@ -77,8 +87,8 @@ exports.updateUser = async (userId, payload) => {
     userInfo.avatar = payload.avatar;
   } else {
     return {
-      type: 'failed',
-      message: 'User not found.'
+      type: "failed",
+      message: "User not found.",
     };
   }
   userInfo.save();
