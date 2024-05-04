@@ -1,0 +1,81 @@
+meta {
+  name: Create Organization
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/user-profile-management/organization
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Bogisich and Sons",
+    "contact_email": "junior_flatley@example.com",
+    "organization_id": "092b1973-0d93-4cc9-a37d-185bf584b7ba",
+    "address": [
+      {
+        "type": "PRIMARY",
+        "label": "Main Office",
+        "address": "902 Turner Harbor",
+        "city": "Rock Hill",
+        "state": "Utah",
+        "country": "Bahrain",
+        "country_code": "ZW",
+        "zipcode": "12362",
+        "location": {
+          "latitude": "34.7014",
+          "longitude": "-62.4214"
+        },
+        "timezone": {
+          "offset": "+9:30",
+          "zone": "Asia/Kuala_Lumpur"
+        },
+        "is_default": true
+      },
+      {
+        "type": "SECONDARY",
+        "label": "Delivery Centre",
+        "address": "65203 Rogahn Landing",
+        "city": "Wellingtonbury",
+        "state": "New York",
+        "country": "Lesotho",
+        "country_code": "KW",
+        "zipcode": "32621-2931",
+        "location": {
+          "latitude": "15.6256",
+          "longitude": "166.3613"
+        },
+        "timezone": {
+          "offset": "+9:30",
+          "zone": "Asia/Baku"
+        },
+        "is_default": false
+      }
+    ],
+    "contact": [
+      {
+        "type": "PRIMARY",
+        "label": "Main Office",
+        "country_code": "+01",
+        "number": "882-500-7931 x32675",
+        "is_default": true
+      },
+      {
+        "type": "SECONDARY",
+        "label": "Delivery Centre",
+        "country_code": "+01",
+        "number": "(411) 816-3079 x03532",
+        "is_default": false
+      }
+    ],
+    "logo": {
+      "large": "https://loremflickr.com/640/480",
+      "medium": "https://loremflickr.com/640/480",
+      "small": "https://loremflickr.com/640/480",
+      "thumbnail": "https://loremflickr.com/640/480"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "user_profile_management_express_js_apis",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

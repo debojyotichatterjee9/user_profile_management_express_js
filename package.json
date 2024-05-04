@@ -3,18 +3,35 @@
   "version": "1.0.0",
   "description": "This is a application which manages user profiles and can be used as a separate service.",
   "main": "serve.js",
+  "scripts": {
+    "start": "node serve.js",
+    "dev": "nodemon serve.js"
+  },
   "author": "Debojyoti Chatterjee <debojyoti.chatterjee9@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "app-root-path": "^3.0.0",
+    "@faker-js/faker": "^8.4.1",
+    "app-root-path": "^3.1.0",
     "bunyan": "^1.8.15",
-    "config": "^3.3.3",
-    "express": "^4.17.1",
-    "express-request-id": "^1.4.1",
-    "mongoose": "^5.12.14",
+    "config": "^3.3.11",
+    "express": "^4.19.2",
+    "express-validator": "^7.0.1",
+    "joi": "^17.12.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.3.1",
     "morgan": "^1.10.0",
-    "uuid": "^8.3.2",
-    "winston": "^3.3.3",
-    "winston-loggly-bulk": "^3.2.1"
+    "node-express-req-id": "^1.0.1",
+    "nodemailer": "^6.9.13",
+    "nodemailer-sendgrid-transport": "^0.2.0",
+    "passport": "^0.7.0",
+    "uuid": "^9.0.1",
+    "winston": "^3.13.0",
+    "winston-loggly-bulk": "^3.3.0"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.29.1",
+    "nodemon": "^3.1.0"
   }
 }

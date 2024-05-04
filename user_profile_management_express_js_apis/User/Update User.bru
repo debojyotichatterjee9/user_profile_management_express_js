@@ -1,0 +1,110 @@
+meta {
+  name: Update User
+  type: http
+  seq: 2
+}
+
+patch {
+  url: http://localhost:3000/user-profile-management/user/66351cab0fb0c8cf292a11ed
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+      "name" : {
+          "name_prefix" : "Mrs.",
+          "first_name" : "Miguel",
+          "last_name" : "Schaefer",
+          "name_suffix" : "MD"
+      },
+      "username" : "haskell50",
+      "identification" : [
+          {
+              "type" : "SSN",
+              "value" : "3430-557620-25492"
+          }
+      ],
+      "address" : [
+          {
+              "type" : "PRIMARY",
+              "label" : "Home",
+              "address" : "42485 Lizzie Centers",
+              "city" : "Dillanside",
+              "state" : "Montana",
+              "country" : "Botswana",
+              "country_code" : "AF",
+              "zipcode" : "21123",
+              "location" : {
+                  "latitude" : "-57.8031",
+                  "longitude" : "119.1417"
+              },
+              "timezone" : {
+                  "offset" : "+9:30",
+                  "zone" : "Asia/Tehran"
+              },
+              "is_default" : true
+          },
+          {
+              "type" : "SECONDARY",
+              "label" : "Apartment",
+              "address" : "80011 Fletcher Green",
+              "city" : "Chetland",
+              "state" : "Illinois",
+              "country" : "Egypt",
+              "country_code" : "CR",
+              "zipcode" : "51905-3786",
+              "location" : {
+                  "latitude" : "-24.8903",
+                  "longitude" : "-127.7740"
+              },
+              "timezone" : {
+                  "offset" : "+9:30",
+                  "zone" : "America/Denver"
+              },
+              "is_default" : false
+          }
+      ],
+      "contact" : [
+          {
+              "type" : "PRIMARY",
+              "label" : "Home",
+              "country_code" : "+01",
+              "number" : "898.948.7005 x4332",
+              "is_default" : true
+          },
+          {
+              "type" : "SECONDARY",
+              "label" : "Apartment",
+              "country_code" : "+01",
+              "number" : "286-719-5453 x2281",
+              "is_default" : false
+          }
+      ],
+      "social_profiles" : [
+          {
+              "label" : "facebook",
+              "link" : "https://hot-prizefight.info"
+          },
+          {
+              "label" : "instagream",
+              "link" : "https://urban-pannier.info"
+          },
+          {
+              "label" : "twitter",
+              "link" : "http://interesting-calf.info"
+          },
+          {
+              "label" : "linkedin",
+              "link" : "https://defenseless-refuge.biz"
+          }
+      ],
+      "avatar" : {
+          "large" : "https://loremflickr.com/640/480",
+          "medium" : "https://loremflickr.com/640/480",
+          "small" : "https://loremflickr.com/640/480",
+          "thumbnail" : "https://loremflickr.com/640/480"
+      }
+  }
+  
+}

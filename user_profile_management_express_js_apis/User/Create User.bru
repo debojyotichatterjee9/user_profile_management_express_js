@@ -1,0 +1,83 @@
+meta {
+  name: Create User
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/user-profile-management/user
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": {
+      "name_prefix": "",
+      "first_name": "",
+      "last_name": "",
+      "name_suffix": ""
+    },
+    "email": "",
+    "username": "",
+    "authentication": {
+      "password": ""
+    },
+    "identification": [
+      {
+        "type": "",
+        "value": ""
+      }
+    ],
+    "address": [
+      {
+        "type": "",
+        "label": "",
+        "address": "",
+        "city": "",
+        "state": "",
+        "country": "",
+        "country_code": "",
+        "zipcode": "",
+        "location": {
+          "latitude": "",
+          "longitude": ""
+        },
+        "timezone": {
+          "offset": "",
+          "zone": ""
+        },
+        "is_default": true
+      }
+    ],
+    "contact": [
+      {
+        "type": "",
+        "label": "",
+        "country_code": "",
+        "number": "",
+        "is_default": true
+      }
+    ],
+    "social_profiles": [
+      {
+        "label": "",
+        "link": ""
+      }
+    ],
+    "avatar": [
+      {
+        "large": "",
+        "medium": "",
+        "small": "",
+        "thumbnail": ""
+      }
+    ],
+    "meta_data": {
+      "gender": "",
+      "dob": "",
+      "theme_code": "",
+      "is_super_admin": true
+    }
+  }
+}

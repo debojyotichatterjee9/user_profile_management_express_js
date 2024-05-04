@@ -1,0 +1,10 @@
+{
+    "pathNotFound":{
+        "ref": "PATH_NOT_FOUND",
+        "message": "The server cannot find the requested resource."
+    },
+    "methodNotAllowed":{
+        "ref": "METHOD_NOT_ALLOWED",
+        "mssage": "The requested HTTP method is known by the server but has been disabled and cannot be used for that resource."
+    }
+}

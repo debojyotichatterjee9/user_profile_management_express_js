@@ -2,7 +2,19 @@
     "services": {
         "rest": {
             "host": "0.0.0.0",
-            "port": 8888
+            "port": 3000
+        }
+    },
+    "database": {
+        "mongo_uri": "mongodb://localhost:27017/db_user_profile",
+        "mongo_docker_uri": "mongodb://root:root@mongo:27017/db_user_profile?authSource=admin"
+    },
+    "sessions": {
+        "expiry_in_seconds": 3600
+    },
+    "mailer": {
+        "sendgrid": {
+            "api_key": "<<PUT YOUR API KEY HERE>>"
         }
     }
 }

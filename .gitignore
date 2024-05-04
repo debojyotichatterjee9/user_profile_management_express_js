@@ -1,13 +1,16 @@
-# MODULES FOLDER
+# NODE MODULES FOLDER
 /node_modules
 
 # LOCK FILES
 yarn.lock
 package.lock
+pnpm-lock.yaml
 
 # CONFIG FILES
 config/default.json
-
 default.json
 
+# LOG FILES
 logs
+yarn-error.log
+
