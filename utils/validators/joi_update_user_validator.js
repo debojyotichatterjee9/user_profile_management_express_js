@@ -8,7 +8,6 @@ exports.payloadValidation = (payload) => {
       last_name: JOI.string(),
       name_suffix: JOI.string().empty('')
     }),
-    email: JOI.string().required().email(),
     username: JOI.string().empty(''),
     identification: JOI.array().items({
       type: JOI.string().empty(''),
