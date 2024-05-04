@@ -20,3 +20,10 @@ exports.createOrganization = async (payload) => {
         };
     }
 };
+
+exports.findOraganizationByOrganizationId = async (organization_id) => {
+    try {
+        const organizationInfo = await Organization.findOne({ organization_id });
+        return organizationInfo ?? false;
+    } catch (error) { console.log(`ERROR --> error`) }
+};

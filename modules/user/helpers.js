@@ -68,7 +68,7 @@ exports.getUserInfoById = async (userId) => {
  */
 exports.updateUser = async (userId, payload) => {
   try {
-    const userInfo = await User.findByIdAndUpdate(userId, payload, { new: true, "fields": { "authentication": 0 } });
+    const userInfo = await User.findByIdAndUpdate(userId, payload, { new: true, "fields": { "authentication.secret_hash": 0, "authentication.salt_key": 0 } });
     if (userInfo) {
       return {
         errorFlag: false,

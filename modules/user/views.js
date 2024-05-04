@@ -2,9 +2,9 @@ const createUserValidationObj = require("../../utils/validators/joi_create_user_
 const updateUserValidationObj = require("../../utils/validators/joi_update_user_validator.js")
 
 const userHelperObj = require("./helpers");
-const userValidatorUtilObj = require("../../utils/validators/user_validator");
 const HTTP_RESPONSE = require("../../constants/http-generic-codes.js");
 const organizationValidatorObj = require("../../utils/validators/organization_validator");
+const organizationHelperObj = require("../organization/helpers.js")
 /**
  * CREATE USER
  * @param {Object} request
@@ -29,7 +29,7 @@ exports.createUser = async (request, response) => {
       if (validationResp.value) {
         if (payload.organization_id) {
           const validOrganizationId =
-            await organizationValidatorObj.checkValidOrganizationId(
+            await organizationHelperObj.findOraganizationByOrganizationId(
               payload.organization_id
             );
           if (!validOrganizationId) {
@@ -54,7 +54,7 @@ exports.createUser = async (request, response) => {
           ref: "SUCCESS",
           data: {
             user: {
-              id: createUserResp.userInfo.authentication.id,
+              id: createUserResp.userInfo.authentication.user_id,
             },
           },
         });
@@ -89,13 +89,11 @@ exports.updateUser = async (request, response) => {
 
     const [userId, payload] = [request.params.userId, request.body];
 
-    // checking the validation of the provided payload
-    // const validatorObj = new userValidatorUtilObj.PayloadValidation();
     const validationResp = updateUserValidationObj.payloadValidation(payload);
 
     if (validationResp.error) {
       return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
-        ref: HTTP_RESPONSE.BAD_REQUEST.message,
+        ref: HTTP_RESPONSE.BAD_REQUEST.ref,
         error: HTTP_RESPONSE.BAD_REQUEST.error,
         message: HTTP_RESPONSE.BAD_REQUEST.message,
         info: validationResp.error.details
@@ -118,7 +116,6 @@ exports.updateUser = async (request, response) => {
       });
     }
   } catch (error) {
-    console.log(error)
     return response
       .status(HTTP_RESPONSE.INTERNAL_SERVER_ERROR.statusCode)
       .send({
