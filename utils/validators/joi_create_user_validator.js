@@ -1,6 +1,6 @@
 const JOI = require('joi');
 
-exports.userValidation = (payload) => {
+exports.payloadValidation = (payload) => {
   const JOISchema = JOI.object({
     name: JOI.object({
       name_prefix: JOI.string().empty(''),

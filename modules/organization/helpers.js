@@ -16,7 +16,14 @@ exports.createOrganization = async (payload) => {
     } catch (error) {
         return {
             errorFlag: true,
-            errorMessage: error.message,
+            message: error.message,
         };
     }
+};
+
+exports.findOraganizationByOrganizationId = async (organization_id) => {
+    try {
+        const organizationInfo = await Organization.findOne({ organization_id });
+        return organizationInfo ?? false;
+    } catch (error) { console.log(`ERROR --> error`) }
 };

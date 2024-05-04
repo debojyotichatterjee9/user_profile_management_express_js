@@ -18,7 +18,7 @@ const AuthenticationSchema = new mongoose.Schema({
 
 const IdentificationSchema = new mongoose.Schema({
   type: { type: mongoose.Schema.Types.String, default: null },
-  value: { type: mongoose.Schema.Types.String, unique: true, trim: true },
+  value: { type: mongoose.Schema.Types.String, trim: true, default: null },
 }, { _id: false, created_on: false, modified_on: false });
 
 const LocationSchema = new mongoose.Schema({
@@ -110,7 +110,7 @@ UserSchema.virtual('id').get(function () {
   return String(this._id);
 });
 UserSchema.virtual('full_name').get(function () {
-  return String(`${this.first_name} ${this.last_name}`);
+  return String(`${this.name.first_name} ${this.name.last_name}`);
 });
 
 UserSchema.methods.setPassword = function (password) {

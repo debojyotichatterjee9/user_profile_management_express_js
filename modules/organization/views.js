@@ -1,4 +1,4 @@
-const HTTP_RESPONSE = require("../../errors/generic-codes.js");
+const HTTP_RESPONSE = require("../../constants/http-generic-codes.js");
 const createOrgValidatorUtilObj = require("../../utils/validators/joi_create_organization_validator.js");
 const organizationHelperObj = require("./helpers");
 
@@ -8,6 +8,7 @@ exports.createOrganization = async (request, response) => {
 
         const validation =
             createOrgValidatorUtilObj.createOrganizationValidation(payload);
+            console.log(payload)
         if (validation.error) {
             return response.status(HTTP_ERRORS.BAD_REQUEST.statusCode).send({
                 ref: HTTP_ERRORS.BAD_REQUEST.ref,
@@ -23,7 +24,7 @@ exports.createOrganization = async (request, response) => {
                     return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
                         ref: HTTP_RESPONSE.BAD_REQUEST.ref,
                         error: HTTP_RESPONSE.BAD_REQUEST.error,
-                        message: createOrgResp.errorMessage,
+                        message: createOrgResp.mesage,
                     });
                 }
                 return response.status(201).send({
