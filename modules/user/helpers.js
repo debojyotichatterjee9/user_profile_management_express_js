@@ -12,7 +12,6 @@ exports.saveUser = async (payload) => {
     userInfo.email = payload.email;
     userInfo.username = payload.username;
     if (payload.organization_id) {
-      // TODO: need to add a check if the organization exists
       userInfo.organization_id = payload.organization_id;
     }
     userInfo.identification = payload.identification;
@@ -88,3 +87,25 @@ exports.updateUser = async (userId, payload) => {
     };
   };
 };
+
+exports.getUserList = async (queryParams) => {
+  try {
+    const [page, limit, groupBy, name] = [queryParams.page, queryParams.limit, queryParams.groupBy, queryParams.name];
+    const userList = await User.find({}).limit(limit);
+    if (!userList) {
+      return {
+        errorFlag: true,
+        message: "Could not fetch user list."
+      }
+    }
+    return {
+      errorFlag: false,
+      userList
+    }
+  } catch (error) {
+    return {
+      errorFlag: true,
+      message: error.message,
+    }
+  }
+}

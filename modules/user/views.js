@@ -126,6 +126,25 @@ exports.updateUser = async (request, response) => {
       });
   }
 };
-exports.getUserList = (request, response) => {
-  console.log("Fetching users...");
+exports.getUserList = async (request, response) => {
+  try {
+    const queryParams = request.query;
+    const userListResp = await userHelperObj.getUserList(queryParams);
+    if (userListResp.errorFlag) {
+
+    }
+    return response.status(200).send({
+      type: "SUCCESS",
+      userList: userListResp.userList
+    });
+  } catch (error) {
+    return response
+      .status(HTTP_RESPONSE.INTERNAL_SERVER_ERROR.statusCode)
+      .send({
+        ref: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.ref,
+        error: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.error,
+        message: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.message,
+        info: error.message
+      });
+  }
 };
