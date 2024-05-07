@@ -1,3 +1,4 @@
+const { DEFAULT_LIMIT, DEFAULT_PAGE } = require("../../constants/api-generic-constants");
 const { User } = require("./models");
 
 /**
@@ -12,7 +13,6 @@ exports.saveUser = async (payload) => {
     userInfo.email = payload.email;
     userInfo.username = payload.username;
     if (payload.organization_id) {
-      // TODO: need to add a check if the organization exists
       userInfo.organization_id = payload.organization_id;
     }
     userInfo.identification = payload.identification;
@@ -88,3 +88,79 @@ exports.updateUser = async (userId, payload) => {
     };
   };
 };
+
+exports.getUserList = async (queryParams) => {
+  try {
+    const [page, limit, sortField, sortOrder, groupBy, name] = [
+      queryParams.page ? parseInt(queryParams.page) : DEFAULT_PAGE,
+      queryParams.limit ? parseInt(queryParams.limit) : DEFAULT_LIMIT,
+      queryParams.sortBy,
+      queryParams.sortOrder,
+      queryParams.groupBy,
+      queryParams.name];
+    let filter = {}
+    const aggregationPipline = [
+      { '$project': { 'authentication': 0 } },
+      {
+        '$skip': (page - 1) * limit
+      },
+      {
+        '$limit': limit
+      }
+    ];
+
+    if (name) {
+      filter = {
+        '$or': [
+          { 'name.first_name': { $regex: name, $options: 'i' } },
+          { 'name.middle_name': { $regex: name, $options: 'i' } },
+          { 'name.last_name': { $regex: name, $options: 'i' } }
+        ]
+      };
+      aggregationPipline.unshift({ '$match': filter });
+    }
+
+    if (sortField) {
+      aggregationPipline.push({
+        '$sort': { [sortField]: sortOrder }
+      },)
+    }
+    if (groupBy) {
+      aggregationPipline.push({
+        '$group': {
+          '_id': `$${groupBy}`,
+          'user_count': { $sum: 1 },
+          'users': { '$addToSet': "$$ROOT" }
+        },
+
+      },
+        { $set: { group: `$_id` } },
+        { $unset: "_id" }
+      )
+    }
+    const userList = await User.aggregate(aggregationPipline);
+    const countFilteredDocs = await User.aggregate([{ $match: filter }, { $count: 'count' }]);
+    const totalFilteredDocsCount = countFilteredDocs[0].count;
+    const totalUserRecords = await User.countDocuments();
+    
+    if (!userList) {
+      return {
+        errorFlag: true,
+        message: "Could not fetch user list."
+      }
+    }
+    return {
+      errorFlag: false,
+      total_users: totalUserRecords,
+      total_filtered_users: totalFilteredDocsCount ?? limit,
+      page,
+      limit,
+      user_list: userList
+    }
+  } catch (error) {
+    return {
+      errorFlag: true,
+      message: error.message,
+    }
+  }
+}
