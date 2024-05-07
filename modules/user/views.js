@@ -135,7 +135,13 @@ exports.getUserList = async (request, response) => {
     }
     return response.status(200).send({
       type: "SUCCESS",
-      userList: userListResp.userList
+      data: {
+        total_users: userListResp.total_users,
+        total_filtered_users: userListResp.total_filtered_users,
+        page: userListResp.page,
+        limit: userListResp.limit,
+        user_list: userListResp.user_list
+      }
     });
   } catch (error) {
     return response
