@@ -7,4 +7,11 @@ router.route('/user-profile-management/organization')
     .post(organizationViewObj.createOrganization)
     .all(errorHandler.handle405);
 
+router.route('/user-profile-management/organizations')
+    .get(organizationViewObj.getOrganizationList)
+    .all(errorHandler.handle405);
+
+router.route('/user-profile-management/organization')
+    .all(errorHandler.handle405);
+
 module.exports = router;

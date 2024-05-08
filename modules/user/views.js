@@ -131,7 +131,12 @@ exports.getUserList = async (request, response) => {
     const queryParams = request.query;
     const userListResp = await userHelperObj.getUserList(queryParams);
     if (userListResp.errorFlag) {
-
+      return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+        ref: HTTP_RESPONSE.BAD_REQUEST.ref,
+        error: HTTP_RESPONSE.BAD_REQUEST.error,
+        message: HTTP_RESPONSE.BAD_REQUEST.message,
+        info: userListResp?.message ?? 'Unable to fetch user list.'
+      });
     }
     return response.status(200).send({
       type: "SUCCESS",

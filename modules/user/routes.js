@@ -7,7 +7,7 @@ router.route('/user-profile-management/user')
   .post(userViewObj.createUser)
   .all(errorHandler.handle405);
 
-router.route('/user-profile-management/user/list')
+router.route('/user-profile-management/users')
   .get(userViewObj.getUserList)
   .all(errorHandler.handle405);
 
