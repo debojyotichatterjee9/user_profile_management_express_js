@@ -49,10 +49,7 @@ exports.getUserInfoById = async (userId) => {
       "-__v",
       "-is_deleted",
     ]);
-    if (!userInfo) {
-      return false;
-    }
-    return userInfo;
+    return userInfo ?? false;
   } catch (error) {
     return {
       errorFlag: true,

@@ -29,6 +29,23 @@ exports.findOraganizationByOrganizationId = async (organization_id) => {
     } catch (error) { console.log(`ERROR --> ${error.message}`) }
 };
 
+exports.getOrganizationInfoById = async (organizationId) => {
+    try {
+      const organizationInfo = await Organization.findOne({_id: organizationId}).select([
+        "-salt_key",
+        "-secret_hash",
+        "-__v",
+        "-is_deleted",
+      ]);
+      return organizationInfo ?? false;
+    } catch (error) {
+      return {
+        errorFlag: true,
+        message: error.message,
+      };
+    }
+  };
+
 exports.getOrganizationList = async (queryParams) => {
     try {
         const [page, limit, sortField, sortOrder, groupBy, name] = [
