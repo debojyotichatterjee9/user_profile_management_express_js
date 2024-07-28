@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const NameSchema = new mongoose.Schema({
   name_prefix: { type: mongoose.Schema.Types.String, trim: true },
   first_name: { type: mongoose.Schema.Types.String, trim: true },
+  middle_name: { type: mongoose.Schema.Types.String, trim: true },
   last_name: { type: mongoose.Schema.Types.String, trim: true },
   name_suffix: { type: mongoose.Schema.Types.String, trim: true },
 
