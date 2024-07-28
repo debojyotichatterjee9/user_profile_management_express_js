@@ -5,6 +5,7 @@ const userHelperObj = require("./helpers");
 const HTTP_RESPONSE = require("../../constants/http-generic-codes.js");
 const organizationValidatorObj = require("../../utils/validators/organization_validator");
 const organizationHelperObj = require("../organization/helpers.js");
+const commonValidatorObj = require("../utils/common-validators.js");
 
 exports.createUser = async (request, response) => {
   try {
@@ -25,7 +26,7 @@ exports.createUser = async (request, response) => {
       if (validationResp.value) {
         if (payload.organization_id) {
           const validOrganizationId =
-            await organizationHelperObj.findOraganizationByOrganizationId(
+            await organizationHelperObj.getOrganizationInfoById(
               payload.organization_id
             );
           if (!validOrganizationId) {
@@ -154,6 +155,17 @@ exports.updateUser = async (request, response) => {
   try {
     const [userId, payload] = [request.params.userId, request.body];
 
+    const isUserIdValid = commonValidatorObj.objectIdValidator(userId);
+
+    if (!isUserIdValid) {
+      return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+        ref: HTTP_RESPONSE.BAD_REQUEST.ref,
+        error: HTTP_RESPONSE.BAD_REQUEST.error,
+        message: HTTP_RESPONSE.BAD_REQUEST.message,
+        info: "Invalid ID provided.",
+      });
+    }
+
     const validationResp = updateUserValidationObj.payloadValidation(payload);
 
     if (validationResp.error) {
@@ -181,6 +193,52 @@ exports.updateUser = async (request, response) => {
       });
     }
   } catch (error) {
+    return response
+      .status(HTTP_RESPONSE.INTERNAL_SERVER_ERROR.statusCode)
+      .send({
+        ref: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.ref,
+        error: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.error,
+        message: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.message,
+        info: error.message,
+      });
+  }
+};
+
+exports.deleteUser = async (request, response) => {
+  try {
+    const userId = request.params.userId;
+
+    const isUserIdValid = commonValidatorObj.objectIdValidator(userId);
+
+    if (!isUserIdValid) {
+      return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+        ref: HTTP_RESPONSE.BAD_REQUEST.ref,
+        error: HTTP_RESPONSE.BAD_REQUEST.error,
+        message: HTTP_RESPONSE.BAD_REQUEST.message,
+        info: "Invalid ID provided.",
+      });
+    }
+
+    const deleteUserResp = await userHelperObj.deleteUser(userId);
+
+    if (deleteUserResp.errorFlag) {
+      return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+        ref: HTTP_RESPONSE.BAD_REQUEST.ref,
+        error: HTTP_RESPONSE.BAD_REQUEST.error,
+        message: HTTP_RESPONSE.BAD_REQUEST.message,
+        info: deleteUserResp.message,
+      });
+    }
+    return response.status(200).send({
+      type: "SUCCESS",
+      data: {
+        user: deleteUserResp.userInfo,
+      },
+    });
+  } catch (error) {
+    console.log('>> $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ <<');
+    console.log(error)
+    console.log('>> $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ <<');
     return response
       .status(HTTP_RESPONSE.INTERNAL_SERVER_ERROR.statusCode)
       .send({
