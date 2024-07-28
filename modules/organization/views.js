@@ -1,6 +1,8 @@
 const HTTP_RESPONSE = require("../../constants/http-generic-codes.js");
 const createOrgValidatorUtilObj = require("../../utils/validators/joi_create_organization_validator.js");
+const updateOrgValidatorUtilObj = require("../../utils/validators/joi_update_organization_validator.js");
 const organizationHelperObj = require("./helpers");
+const commonValidatorObj = require("../../utils/validators/common-validators.js");
 
 exports.createOrganization = async (request, response) => {
   try {
@@ -54,6 +56,42 @@ exports.createOrganization = async (request, response) => {
   }
 };
 
+exports.getOrganizationList = async (request, response) => {
+  try {
+    const queryParams = request.query;
+    const organizationListResp =
+      await organizationHelperObj.getOrganizationList(queryParams);
+    if (organizationListResp.errorFlag) {
+      return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+        ref: HTTP_RESPONSE.BAD_REQUEST.ref,
+        error: HTTP_RESPONSE.BAD_REQUEST.error,
+        message: HTTP_RESPONSE.BAD_REQUEST.message,
+        info:
+          organizationListResp?.message ?? "Unable to fetch organization list.",
+      });
+    }
+    return response.status(200).send({
+      type: "SUCCESS",
+      data: {
+        total_organizations: organizationListResp.total_organizations,
+        total_filtered_users: organizationListResp.total_filtered_organizations,
+        page: organizationListResp.page,
+        limit: organizationListResp.limit,
+        user_list: organizationListResp.organization_list,
+      },
+    });
+  } catch (error) {
+    return response
+      .status(HTTP_RESPONSE.INTERNAL_SERVER_ERROR.statusCode)
+      .send({
+        ref: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.ref,
+        error: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.error,
+        message: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.message,
+        info: error.message,
+      });
+  }
+};
+
 exports.getOrganizationDetails = async (request, response) => {
   try {
     const organizationId = request.params.organizationId;
@@ -97,28 +135,88 @@ exports.getOrganizationDetails = async (request, response) => {
   }
 };
 
-exports.getOrganizationList = async (request, response) => {
+exports.updateOrganization = async(request, response) => {
   try {
-    const queryParams = request.query;
-    const organizationListResp =
-      await organizationHelperObj.getOrganizationList(queryParams);
-    if (organizationListResp.errorFlag) {
+    const [organizationId, payload] = [request.params.organizationId, request.body];
+
+    const isOrganizationIdValid = commonValidatorObj.objectIdValidator(organizationId);
+
+    if (!isOrganizationIdValid) {
       return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
         ref: HTTP_RESPONSE.BAD_REQUEST.ref,
         error: HTTP_RESPONSE.BAD_REQUEST.error,
         message: HTTP_RESPONSE.BAD_REQUEST.message,
-        info:
-          organizationListResp?.message ?? "Unable to fetch organization list.",
+        info: "Invalid ID provided.",
+      });
+    }
+
+    const validationResp = updateOrgValidatorUtilObj.payloadValidation(payload);
+
+    if (validationResp.error) {
+      return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+        ref: HTTP_RESPONSE.BAD_REQUEST.ref,
+        error: HTTP_RESPONSE.BAD_REQUEST.error,
+        message: HTTP_RESPONSE.BAD_REQUEST.message,
+        info: validationResp.error.details,
+      });
+    } else {
+      const updateOrganizationResp = await organizationHelperObj.updateOrganization(organizationId, payload);
+      if (updateOrganizationResp.errorFlag) {
+        return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+          ref: HTTP_RESPONSE.BAD_REQUEST.ref,
+          error: HTTP_RESPONSE.BAD_REQUEST.error,
+          message: HTTP_RESPONSE.BAD_REQUEST.message,
+          info: updateOrganizationResp.message,
+        });
+      }
+      return response.status(200).send({
+        type: "SUCCESS",
+        data: {
+          organization: updateOrganizationResp.organizationInfo,
+        },
+      });
+    }
+  } catch (error) {
+    return response
+      .status(HTTP_RESPONSE.INTERNAL_SERVER_ERROR.statusCode)
+      .send({
+        ref: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.ref,
+        error: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.error,
+        message: HTTP_RESPONSE.INTERNAL_SERVER_ERROR.message,
+        info: error.message,
+      });
+  }
+}
+
+exports.deleteOrganization = async(request, response) => {
+  try {
+    const organizationId = request.params.organizationId;
+
+    const isOrganizationIdValid = commonValidatorObj.objectIdValidator(organizationId);
+
+    if (!isOrganizationIdValid) {
+      return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+        ref: HTTP_RESPONSE.BAD_REQUEST.ref,
+        error: HTTP_RESPONSE.BAD_REQUEST.error,
+        message: HTTP_RESPONSE.BAD_REQUEST.message,
+        info: "Invalid ID provided.",
+      });
+    }
+
+    const deleteOrganizationResp = await organizationHelperObj.deleteOrganization(organizationId);
+
+    if (deleteOrganizationResp.errorFlag) {
+      return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+        ref: HTTP_RESPONSE.BAD_REQUEST.ref,
+        error: HTTP_RESPONSE.BAD_REQUEST.error,
+        message: HTTP_RESPONSE.BAD_REQUEST.message,
+        info: deleteOrganizationResp.message,
       });
     }
     return response.status(200).send({
       type: "SUCCESS",
       data: {
-        total_organizations: organizationListResp.total_organizations,
-        total_filtered_users: organizationListResp.total_filtered_organizations,
-        page: organizationListResp.page,
-        limit: organizationListResp.limit,
-        user_list: organizationListResp.organization_list,
+        organization: deleteOrganizationResp.organizationInfo,
       },
     });
   } catch (error) {
@@ -131,4 +229,4 @@ exports.getOrganizationList = async (request, response) => {
         info: error.message,
       });
   }
-};
+}

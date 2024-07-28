@@ -3,9 +3,8 @@ const updateUserValidationObj = require("../../utils/validators/joi_update_user_
 
 const userHelperObj = require("./helpers");
 const HTTP_RESPONSE = require("../../constants/http-generic-codes.js");
-const organizationValidatorObj = require("../../utils/validators/organization_validator");
 const organizationHelperObj = require("../organization/helpers.js");
-const commonValidatorObj = require("../utils/common-validators.js");
+const commonValidatorObj = require("../../utils/validators/common-validators.js");
 
 exports.createUser = async (request, response) => {
   try {
@@ -236,9 +235,6 @@ exports.deleteUser = async (request, response) => {
       },
     });
   } catch (error) {
-    console.log('>> $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ <<');
-    console.log(error)
-    console.log('>> $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ <<');
     return response
       .status(HTTP_RESPONSE.INTERNAL_SERVER_ERROR.statusCode)
       .send({

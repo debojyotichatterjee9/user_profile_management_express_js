@@ -16,6 +16,8 @@ router
 router
   .route("/user-profile-management/organization/:organizationId")
   .get(organizationViewObj.getOrganizationDetails)
+  .patch(organizationViewObj.updateOrganization)
+  .delete(organizationViewObj.deleteOrganization)
   .all(errorHandler.handle405);
 
 module.exports = router;
