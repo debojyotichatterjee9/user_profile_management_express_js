@@ -10,7 +10,6 @@ exports.createOrganization = async (request, response) => {
 
     const validation =
       createOrgValidatorUtilObj.createOrganizationValidation(payload);
-    console.log(payload);
     if (validation.error) {
       return response.status(HTTP_ERRORS.BAD_REQUEST.statusCode).send({
         ref: HTTP_ERRORS.BAD_REQUEST.ref,
