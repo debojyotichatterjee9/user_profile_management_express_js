@@ -29,9 +29,11 @@
     "winston-loggly-bulk": "^3.3.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.8.0",
     "eslint": "^9.0.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.29.1",
+    "globals": "^15.9.0",
     "nodemon": "^3.1.0"
   }
 }

@@ -9,9 +9,9 @@ exports.createProject = async (request, response) => {
     const validation =
     createProjectValidatorUtilObj.createProjectValidation(payload);
     if (validation.error) {
-      return response.status(HTTP_ERRORS.BAD_REQUEST.statusCode).send({
-        ref: HTTP_ERRORS.BAD_REQUEST.ref,
-        message: HTTP_ERRORS.BAD_REQUEST.message,
+      return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
+        ref: HTTP_RESPONSE.BAD_REQUEST.ref,
+        message: HTTP_RESPONSE.BAD_REQUEST.message,
         error: validation.error.details,
       });
     } else {
@@ -23,7 +23,7 @@ exports.createProject = async (request, response) => {
           return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
             ref: HTTP_RESPONSE.BAD_REQUEST.ref,
             error: HTTP_RESPONSE.BAD_REQUEST.error,
-            message: createOrgResp.mesage,
+            message: createProjectResp.mesage,
           });
         }
         return response.status(201).send({

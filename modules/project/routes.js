@@ -7,3 +7,5 @@ router
   .route("/user-profile-management/project")
   .post(projectViewObj.createProject)
   .all(errorHandler.handle405);
+
+module.exports = router;
