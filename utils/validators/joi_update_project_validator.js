@@ -87,7 +87,7 @@ const milestoneSchema = JOI.object({
   priority: JOI.string().valid(...["Low", "Medium", "High"]),
 });
 
-exports.createProjectValidation = (payload) => {
+exports.updateProjectValidation = (payload) => {
   const JOISchema = JOI.object({
     name: JOI.string()
       .trim()

@@ -2,22 +2,22 @@ const mongoose = require("mongoose");
 const uuid = require("uuid");
 
 const AttachmentSchema = new mongoose.Schema({
-  fileName: {
+  file_name: {
     type: mongoose.Schema.Types.String,
     required: [true, "File name is required"],
     trim: true,
   },
-  fileUrl: {
+  file_url: {
     type: mongoose.Schema.Types.String,
     required: [true, "File URL is required"],
     trim: true,
   },
-  uploadedBy: {
-    type: mongoose.Schema.Types.ObjectId,
+  uploaded_by: {
+    type: mongoose.Schema.Types.String,
     ref: "User",
     required: [true, "Uploaded by is required"],
   },
-  uploadedAt: {
+  uploaded_at: {
     type: mongoose.Schema.Types.Date,
     default: Date.now,
   },
@@ -29,12 +29,12 @@ const CommentSchema = new mongoose.Schema({
     required: [true, "Comment is required"],
     trim: true,
   },
-  commentedBy: {
-    type: mongoose.Schema.Types.ObjectId,
+  commented_by: {
+    type: mongoose.Schema.Types.String,
     ref: "User",
     required: [true, "Commented by is required"],
   },
-  commentedAt: {
+  commented_at: {
     type: mongoose.Schema.Types.Date,
     default: Date.now,
   },
@@ -47,7 +47,7 @@ const MilestoneSchema = new mongoose.Schema({
     trim: true,
     maxlength: [100, "Milestone title cannot exceed 100 characters"],
   },
-  dueDate: {
+  due_date: {
     type: mongoose.Schema.Types.Date,
     validate: {
       validator: function (v) {
@@ -56,13 +56,8 @@ const MilestoneSchema = new mongoose.Schema({
       message: "Milestone due date must be within project start and end dates",
     },
   },
-  status: {
+  assigned_to: {
     type: mongoose.Schema.Types.String,
-    enum: ["Pending", "Completed"],
-    default: "Pending",
-  },
-  assignedTo: {
-    type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
   attachments: [AttachmentSchema],
@@ -120,17 +115,17 @@ const ProjectSchema = new mongoose.Schema(
       trim: true,
       maxlength: [1000, "Project description cannot exceed 1000 characters"],
     },
-    organization: {
-      type: mongoose.Schema.Types.ObjectId,
+    organization_id: {
+      type: mongoose.Schema.Types.String,
       ref: "Organization",
       required: [true, "Organization is required"],
     },
-    startDate: {
+    start_date: {
       type: mongoose.Schema.Types.Date,
       required: [true, "Start date is required"],
       default: Date.now,
     },
-    endDate: {
+    end_date: {
       type: mongoose.Schema.Types.Date,
       validate: {
         validator: function (v) {
@@ -147,18 +142,20 @@ const ProjectSchema = new mongoose.Schema(
     budget: {
       type: mongoose.Schema.Types.Number,
       min: [0, "Budget cannot be negative"],
+      default: 0
     },
-    actualCost: {
+    actual_cost: {
       type: mongoose.Schema.Types.Number,
       min: [0, "Actual cost cannot be negative"],
+      default: 0
     },
-    createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
+    created_by: {
+      type: mongoose.Schema.Types.String,
       ref: "User",
       required: [true, "Created by is required"],
     },
-    updatedBy: {
-      type: mongoose.Schema.Types.ObjectId,
+    updated_by: {
+      type: mongoose.Schema.Types.String,
       ref: "User",
     },
     tags: [
@@ -176,33 +173,33 @@ const ProjectSchema = new mongoose.Schema(
     milestones: [MilestoneSchema],
     files: [
       {
-        fileName: {
+        file_name: {
           type: mongoose.Schema.Types.String,
           required: [true, "File name is required"],
           trim: true,
         },
-        fileUrl: {
+        file_url: {
           type: mongoose.Schema.Types.String,
           required: [true, "File URL is required"],
           trim: true,
         },
-        uploadedBy: {
-          type: mongoose.Schema.Types.ObjectId,
+        uploaded_by: {
+          type: mongoose.Schema.Types.String,
           ref: "User",
           required: [true, "Uploaded by is required"],
         },
-        uploadedAt: {
+        uploaded_at: {
           type: mongoose.Schema.Types.Date,
           default: Date.now,
         },
       },
     ],
-    createdAt: {
+    created_at: {
       type: mongoose.Schema.Types.Date,
       default: Date.now,
       immutable: true,
     },
-    updatedAt: {
+    updated_at: {
       type: mongoose.Schema.Types.Date,
       default: Date.now,
     },

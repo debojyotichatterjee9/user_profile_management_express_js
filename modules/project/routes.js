@@ -8,4 +8,15 @@ router
   .post(projectViewObj.createProject)
   .all(errorHandler.handle405);
 
+  router
+  .route("/user-profile-management/projects")
+  .get(projectViewObj.getProjectList)
+  .all(errorHandler.handle405);
+
+router
+  .route("/user-profile-management/project/:projectId")
+  .get(projectViewObj.getProjectDetails)
+  .patch(projectViewObj.updateProject)
+  .delete(projectViewObj.deleteProject)
+  .all(errorHandler.handle405);
 module.exports = router;

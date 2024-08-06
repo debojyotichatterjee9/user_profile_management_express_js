@@ -73,7 +73,7 @@ exports.getOrganizationList = async (request, response) => {
       type: "SUCCESS",
       data: {
         total_organizations: organizationListResp.total_organizations,
-        total_filtered_users: organizationListResp.total_filtered_organizations,
+        total_filtered_organizations: organizationListResp.total_filtered_organizations,
         page: organizationListResp.page,
         limit: organizationListResp.limit,
         user_list: organizationListResp.organization_list,
