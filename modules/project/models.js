@@ -23,64 +23,6 @@ const AttachmentSchema = new mongoose.Schema({
   },
 });
 
-const CommentSchema = new mongoose.Schema({
-  comment: {
-    type: mongoose.Schema.Types.String,
-    required: [true, "Comment is required"],
-    trim: true,
-  },
-  commented_by: {
-    type: mongoose.Schema.Types.String,
-    ref: "User",
-    required: [true, "Commented by is required"],
-  },
-  commented_at: {
-    type: mongoose.Schema.Types.Date,
-    default: Date.now,
-  },
-});
-
-const MilestoneSchema = new mongoose.Schema({
-  title: {
-    type: mongoose.Schema.Types.String,
-    required: [true, "Milestone title is required"],
-    trim: true,
-    maxlength: [100, "Milestone title cannot exceed 100 characters"],
-  },
-  due_date: {
-    type: mongoose.Schema.Types.Date,
-    validate: {
-      validator: function (v) {
-        return v >= this.startDate && (!this.endDate || v <= this.endDate);
-      },
-      message: "Milestone due date must be within project start and end dates",
-    },
-  },
-  assigned_to: {
-    type: mongoose.Schema.Types.String,
-    ref: "User",
-  },
-  attachments: [AttachmentSchema],
-  comments: [CommentSchema],
-  status: {
-    type: mongoose.Schema.Types.String,
-    enum: ["Not Started", "In Progress", "Completed", "On Hold", "Cancelled"],
-    default: "Not Started",
-  },
-  tags: [
-    {
-      type: mongoose.Schema.Types.String,
-      trim: true,
-      maxlength: [10, "Tag cannot exceed 10 characters"],
-    },
-  ],
-  priority: {
-    type: mongoose.Schema.Types.String,
-    enum: ["Low", "Medium", "High"],
-    default: "Medium",
-  },
-});
-
 const MetaDataSchema = new mongoose.Schema(
   {
     is_enabled: { type: mongoose.Schema.Types.Boolean, default: false },
@@ -170,30 +112,7 @@ const ProjectSchema = new mongoose.Schema(
       enum: ["Low", "Medium", "High"],
       default: "Medium",
     },
-    milestones: [MilestoneSchema],
-    files: [
-      {
-        file_name: {
-          type: mongoose.Schema.Types.String,
-          required: [true, "File name is required"],
-          trim: true,
-        },
-        file_url: {
-          type: mongoose.Schema.Types.String,
-          required: [true, "File URL is required"],
-          trim: true,
-        },
-        uploaded_by: {
-          type: mongoose.Schema.Types.String,
-          ref: "User",
-          required: [true, "Uploaded by is required"],
-        },
-        uploaded_at: {
-          type: mongoose.Schema.Types.Date,
-          default: Date.now,
-        },
-      },
-    ],
+    attachments: [AttachmentSchema],
     created_at: {
       type: mongoose.Schema.Types.Date,
       default: Date.now,
