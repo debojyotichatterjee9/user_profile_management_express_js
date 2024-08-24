@@ -1,38 +1,38 @@
 const HTTP_RESPONSE = require("../../constants/http-generic-codes.js");
-const createOrgValidatorUtilObj = require("../../utils/validators/joi_create_organization_validator.js");
-const updateOrgValidatorUtilObj = require("../../utils/validators/joi_update_organization_validator.js");
-const organizationHelperObj = require("./helpers");
+const createProjectValidatorUtilObj = require("../../utils/validators/joi_create_project_validator.js");
+const projectHelperObj = require("./helpers");
 const commonValidatorObj = require("../../utils/validators/common-validators.js");
+const updateProjValidatorUtilObj = require("../../utils/validators/joi_update_project_validator.js")
 
-exports.createOrganization = async (request, response) => {
+exports.createProject = async (request, response) => {
   try {
     const [payload] = [request.body];
 
     const validation =
-      createOrgValidatorUtilObj.createOrganizationValidation(payload);
+    createProjectValidatorUtilObj.createProjectValidation(payload);
     if (validation.error) {
       return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
         ref: HTTP_RESPONSE.BAD_REQUEST.ref,
         message: HTTP_RESPONSE.BAD_REQUEST.message,
-        error: validation.error.details,
+        error: validation.error.message,
       });
     } else {
       if (validation.value) {
-        const createOrgResp = await organizationHelperObj.createOrganization(
+        const createProjectResp = await projectHelperObj.createProject(
           payload
         );
-        if (createOrgResp.errorFlag) {
+        if (createProjectResp.errorFlag) {
           return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
             ref: HTTP_RESPONSE.BAD_REQUEST.ref,
             error: HTTP_RESPONSE.BAD_REQUEST.error,
-            message: createOrgResp.mesage,
+            message: createProjectResp.message,
           });
         }
         return response.status(201).send({
           ref: "SUCCESS",
           data: {
-            organization: {
-              id: createOrgResp.organizationInfo.organization_id,
+            project: {
+              id: createProjectResp.projectInfo.project_id,
             },
           },
         });
@@ -55,28 +55,28 @@ exports.createOrganization = async (request, response) => {
   }
 };
 
-exports.getOrganizationList = async (request, response) => {
+exports.getProjectList = async (request, response) => {
   try {
     const queryParams = request.query;
-    const organizationListResp =
-      await organizationHelperObj.getOrganizationList(queryParams);
-    if (organizationListResp.errorFlag) {
+    const projectListResp =
+      await projectHelperObj.getProjectList(queryParams);
+    if (projectListResp.errorFlag) {
       return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
         ref: HTTP_RESPONSE.BAD_REQUEST.ref,
         error: HTTP_RESPONSE.BAD_REQUEST.error,
         message: HTTP_RESPONSE.BAD_REQUEST.message,
         info:
-          organizationListResp?.message ?? "Unable to fetch organization list.",
+        projectListResp?.message ?? "Unable to fetch organization list.",
       });
     }
     return response.status(200).send({
       type: "SUCCESS",
       data: {
-        total_organizations: organizationListResp.total_organizations,
-        total_filtered_organizations: organizationListResp.total_filtered_organizations,
-        page: organizationListResp.page,
-        limit: organizationListResp.limit,
-        user_list: organizationListResp.organization_list,
+        total_projectss: projectListResp.total_projects,
+        total_filtered_projects: projectListResp.total_filtered_projects,
+        page: projectListResp.page,
+        limit: projectListResp.limit,
+        project_list: projectListResp.project_list,
       },
     });
   } catch (error) {
@@ -91,35 +91,35 @@ exports.getOrganizationList = async (request, response) => {
   }
 };
 
-exports.getOrganizationDetails = async (request, response) => {
+exports.getProjectDetails = async (request, response) => {
   try {
-    const organizationId = request.params.organizationId;
-    const organizationDetailsResp =
-      await organizationHelperObj.getOrganizationInfoById(
-        organizationId
+    const projectId = request.params.projectId;
+    const projectDetailsResp =
+      await projectHelperObj.getProjectInfoById(
+        projectId
       );
-    if (organizationDetailsResp.errorFlag) {
+    if (projectDetailsResp.errorFlag) {
       return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
         ref: HTTP_RESPONSE.BAD_REQUEST.ref,
         error: HTTP_RESPONSE.BAD_REQUEST.error,
         message: HTTP_RESPONSE.BAD_REQUEST.message,
         info:
-          organizationDetailsResp?.message ??
-          "Unable to fetch organization list.",
+        projectDetailsResp?.message ??
+          "Unable to fetch project list.",
       });
     }
-    if (!organizationDetailsResp) {
+    if (!projectDetailsResp) {
       return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
         ref: HTTP_RESPONSE.NOT_FOUND.ref,
         error: HTTP_RESPONSE.NOT_FOUND.error,
         message: HTTP_RESPONSE.NOT_FOUND.message,
-        info: organizationDetailsResp.message,
+        info: projectDetailsResp.message,
       });
     }
     return response.status(200).send({
       type: "SUCCESS",
       data: {
-        organization: organizationDetailsResp,
+        project: projectDetailsResp,
       },
     });
   } catch (error) {
@@ -134,13 +134,13 @@ exports.getOrganizationDetails = async (request, response) => {
   }
 };
 
-exports.updateOrganization = async(request, response) => {
+exports.updateProject = async(request, response) => {
   try {
-    const [organizationId, payload] = [request.params.organizationId, request.body];
+    const [projectId, payload] = [request.params.projectId, request.body];
 
-    const isOrganizationIdValid = commonValidatorObj.objectIdValidator(organizationId);
+    const isProjectIdValid = commonValidatorObj.objectIdValidator(projectId);
 
-    if (!isOrganizationIdValid) {
+    if (!isProjectIdValid) {
       return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
         ref: HTTP_RESPONSE.BAD_REQUEST.ref,
         error: HTTP_RESPONSE.BAD_REQUEST.error,
@@ -149,7 +149,7 @@ exports.updateOrganization = async(request, response) => {
       });
     }
 
-    const validationResp = updateOrgValidatorUtilObj.payloadValidation(payload);
+    const validationResp = updateProjValidatorUtilObj.updateProjectValidation(payload);
 
     if (validationResp.error) {
       return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
@@ -159,19 +159,19 @@ exports.updateOrganization = async(request, response) => {
         info: validationResp.error.details,
       });
     } else {
-      const updateOrganizationResp = await organizationHelperObj.updateOrganization(organizationId, payload);
-      if (updateOrganizationResp.errorFlag) {
+      const updateProjectResp = await projectHelperObj.updateProject(projectId, payload);
+      if (updateProjectResp.errorFlag) {
         return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
           ref: HTTP_RESPONSE.BAD_REQUEST.ref,
           error: HTTP_RESPONSE.BAD_REQUEST.error,
           message: HTTP_RESPONSE.BAD_REQUEST.message,
-          info: updateOrganizationResp.message,
+          info: updateProjectResp.message,
         });
       }
       return response.status(200).send({
         type: "SUCCESS",
         data: {
-          organization: updateOrganizationResp.organizationInfo,
+          project: updateProjectResp.projectInfo,
         },
       });
     }
@@ -187,13 +187,13 @@ exports.updateOrganization = async(request, response) => {
   }
 }
 
-exports.deleteOrganization = async(request, response) => {
+exports.deleteProject = async(request, response) => {
   try {
-    const organizationId = request.params.organizationId;
+    const projectId = request.params.projectId;
 
-    const isOrganizationIdValid = commonValidatorObj.objectIdValidator(organizationId);
+    const isProjectIdValid = commonValidatorObj.objectIdValidator(projectId);
 
-    if (!isOrganizationIdValid) {
+    if (!isProjectIdValid) {
       return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
         ref: HTTP_RESPONSE.BAD_REQUEST.ref,
         error: HTTP_RESPONSE.BAD_REQUEST.error,
@@ -202,20 +202,20 @@ exports.deleteOrganization = async(request, response) => {
       });
     }
 
-    const deleteOrganizationResp = await organizationHelperObj.deleteOrganization(organizationId);
+    const deleteProjectResp = await projectHelperObj.deleteProject(projectId);
 
-    if (deleteOrganizationResp.errorFlag) {
+    if (deleteProjectResp.errorFlag) {
       return response.status(HTTP_RESPONSE.BAD_REQUEST.statusCode).send({
         ref: HTTP_RESPONSE.BAD_REQUEST.ref,
         error: HTTP_RESPONSE.BAD_REQUEST.error,
         message: HTTP_RESPONSE.BAD_REQUEST.message,
-        info: deleteOrganizationResp.message,
+        info: deleteProjectResp.message,
       });
     }
     return response.status(200).send({
       type: "SUCCESS",
       data: {
-        organization: deleteOrganizationResp.organizationInfo,
+        project: deleteProjectResp.projectInfo,
       },
     });
   } catch (error) {

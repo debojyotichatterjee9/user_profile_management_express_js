@@ -109,7 +109,7 @@ exports.getOrganizationList = async (queryParams) => {
     return {
       errorFlag: false,
       total_users: totalOrganizationRecords,
-      total_filtered_users: totalFilteredDocsCount ?? limit,
+      total_filtered_organizations: totalFilteredDocsCount ?? limit,
       page,
       limit,
       organization_list: organizationList,

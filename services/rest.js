@@ -11,6 +11,7 @@ const errorMessage = require("../utils/error/errorMessages.json");
 const authRoutes = require("../modules/authentication/routes");
 const userRoutes = require("../modules/user/routes");
 const organizationRoutes = require("../modules/organization/routes");
+const projectRoutes = require("../modules/project/routes")
 const genericRoutes = require("../modules/generic/routes");
 
 module.exports = () => {
@@ -70,6 +71,7 @@ module.exports = () => {
     authRoutes,
     userRoutes,
     organizationRoutes,
+    projectRoutes,
     genericRoutes
   ]);
   // Handle 404 requests
