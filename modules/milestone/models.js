@@ -22,12 +22,33 @@ const AttachmentSchema = new mongoose.Schema({
   },
 });
 
+const MetaDataSchema = new mongoose.Schema(
+  {
+    is_enabled: { type: mongoose.Schema.Types.Boolean, default: false },
+    is_deleted: { type: mongoose.Schema.Types.Boolean, default: false },
+    enabled_on: { type: mongoose.Schema.Types.Date, default: null },
+    disabled_on: { type: mongoose.Schema.Types.Date, default: null },
+    deleted_on: { type: mongoose.Schema.Types.Date, default: null },
+  },
+  { _id: false, created_on: false, modified_on: false }
+);
+
 const MilestoneSchema = new mongoose.Schema({
   title: {
     type: mongoose.Schema.Types.String,
     required: [true, "Milestone title is required"],
     trim: true,
     maxlength: [100, "Milestone title cannot exceed 100 characters"],
+  },
+  organization_id: {
+    type: mongoose.Schema.Types.String,
+    ref: "Organization",
+    required: [true, "Organization Id is required"],
+  },
+  project_id: {
+    type: mongoose.Schema.Types.String,
+    ref: "Project",
+    required: [true, "Project Id is required"],
   },
   due_date: {
     type: mongoose.Schema.Types.Date,
@@ -39,6 +60,10 @@ const MilestoneSchema = new mongoose.Schema({
     },
   },
   assigned_to: {
+    type: mongoose.Schema.Types.String,
+    ref: "User",
+  },
+  assigned_by: {
     type: mongoose.Schema.Types.String,
     ref: "User",
   },
@@ -60,6 +85,7 @@ const MilestoneSchema = new mongoose.Schema({
     enum: ["Low", "Medium", "High"],
     default: "Medium",
   },
+  meta_data: { type: MetaDataSchema, default: () => ({}) },
 });
 
 // Add a pre-save hook to update the updatedAt field
@@ -69,6 +95,15 @@ MilestoneSchema.pre("save", function (next) {
 });
 
 // Define indexes for faster queries
-MilestoneSchema.index({ name: 1, organization: 1 }, { unique: true });
+MilestoneSchema.index(
+  {
+    name: 1,
+    organization_id: 1,
+    project_id: 1,
+    assigned_to: 1,
+    assigned_by: 1,
+  },
+  { unique: true }
+);
 
 exports.Project = mongoose.model("Milestone", MilestoneSchema);
