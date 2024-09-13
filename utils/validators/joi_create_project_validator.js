@@ -1,28 +1,3 @@
-// const JOI = require("JOI");
-
-// exports.createProjectValidation = (payload) => {
-//   const JOISchema = JOI.object({
-//     name: JOI.string().required(),
-//     project_code: JOI.string().required(),
-//     description: JOI.string(),
-//     organization_id: JOI.string(),
-//     start_date: JOI.string(),
-//     end_date: JOI.string(),
-//     created_by: JOI.string(),
-//     status:JOI.string(),
-//     budget: JOI.number(),
-//     actual_cost: JOI.number(),
-//     updated_by:JOI.string(),
-//     tags:JOI.array(),
-//     priority:JOI.string(),
-//     milestones:JOI.object(),
-//     files:JOI.object(),
-//     meta_data:JOI.object(),
-//   });
-//   const JOIValidateOptions = { abortEarly: false };
-//   return JOISchema.validate(payload, JOIValidateOptions);
-// };
-
 const JOI = require("joi");
 
 const attachmentSchema = JOI.object({

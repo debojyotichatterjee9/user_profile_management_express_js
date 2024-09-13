@@ -50,13 +50,27 @@ const MilestoneSchema = new mongoose.Schema({
     ref: "Project",
     required: [true, "Project Id is required"],
   },
+  start_date: {
+    type: mongoose.Schema.Types.Date,
+    required: [true, "Start date is required"],
+    default: Date.now,
+  },
   due_date: {
     type: mongoose.Schema.Types.Date,
     validate: {
       validator: function (v) {
         return v >= this.startDate && (!this.endDate || v <= this.endDate);
       },
-      message: "Milestone due date must be within project start and end dates",
+      message: "Milestone due date must be within start and end dates",
+    },
+  },
+  end_date: {
+    type: mongoose.Schema.Types.Date,
+    validate: {
+      validator: function (v) {
+        return v > this.startDate;
+      },
+      message: "End date must be after start date",
     },
   },
   assigned_to: {
@@ -106,4 +120,4 @@ MilestoneSchema.index(
   { unique: true }
 );
 
-exports.Project = mongoose.model("Milestone", MilestoneSchema);
+exports.Milestone = mongoose.model("Milestone", MilestoneSchema);

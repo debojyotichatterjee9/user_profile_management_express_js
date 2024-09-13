@@ -22,6 +22,11 @@ exports.createMilestoneValidation = (payload) => {
       .required()
       .max(100)
       .error(new Error("Milestone title is required (max 100 characters)")),
+    organization_id: JOI.string(),
+    project_id: JOI.string(),
+    start_date: JOI.date()
+      .required()
+      .error(new Error("Start date is required")),
     due_date: JOI.date()
       .when("startDate", {
         is: JOI.required(),
@@ -35,8 +40,13 @@ exports.createMilestoneValidation = (payload) => {
         otherwise: JOI.allow(null),
       })
       .error(
-        new Error("Milestone due date must be within project start and end dates")
+        new Error(
+          "Milestone due date must be within start and end dates"
+        )
       ),
+    end_date: JOI.date()
+      .greater(JOI.ref("start_date"))
+      .error(new Error("End date must be after start date")),
     assigned_to: JOI.string(),
     attachments: JOI.array().items(attachmentSchema),
     status: JOI.string().valid(
