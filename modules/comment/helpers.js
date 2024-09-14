@@ -126,7 +126,7 @@ exports.updateComment = async (commentId, payload) => {
   }
 };
 
-exports.deleteMilestone = async (commentId) => {
+exports.deleteComment = async (commentId) => {
   try {
     const commentDeleteParams = {
       "meta_data.is_deleted": true,
@@ -147,7 +147,7 @@ exports.deleteMilestone = async (commentId) => {
     } else {
       return {
         errorFlag: true,
-        message: "Milestone deleteion failed.",
+        message: "Comment deleteion failed.",
       };
     }
   } catch (error) {
