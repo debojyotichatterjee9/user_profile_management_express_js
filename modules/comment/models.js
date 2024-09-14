@@ -71,4 +71,4 @@ CommentSchema.index(
   { unique: true }
 );
 
-exports.Project = mongoose.model("Comment", CommentSchema);
+exports.Comment = mongoose.model("Comment", CommentSchema);

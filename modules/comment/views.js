@@ -32,7 +32,7 @@ exports.createComment = async (request, response) => {
           ref: "SUCCESS",
           data: {
             comment: {
-              id: createCommentResp.projectInfo.project_id,
+              id: createCommentResp.commentInfo._id,
             },
           },
         });
