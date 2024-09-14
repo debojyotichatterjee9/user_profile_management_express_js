@@ -15,7 +15,6 @@ router
 
 router
   .route("/user-profile-management/comment/:commentId")
-  .get(commentViewObj.getCommentDetails)
   .patch(commentViewObj.updateComment)
   .delete(commentViewObj.deleteComment)
   .all(errorHandler.handle405);

@@ -12,6 +12,7 @@ const userRoutes = require("../modules/user/routes");
 const organizationRoutes = require("../modules/organization/routes");
 const projectRoutes = require("../modules/project/routes");
 const milestoneRoutes = require("../modules/milestone/routes");
+const commentRoutes = require("../modules/comment/routes");
 const genericRoutes = require("../modules/generic/routes");
 
 module.exports = () => {
@@ -81,6 +82,7 @@ module.exports = () => {
     organizationRoutes,
     projectRoutes,
     milestoneRoutes,
+    commentRoutes,
     genericRoutes,
   ]);
   // Handle 404 requests
