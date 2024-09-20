@@ -4,17 +4,17 @@ const errorHandler = require("../../utils/error/errorHandler");
 const commentViewObj = require("./views");
 
 router
-  .route("/user-profile-management/comment")
+  .route("/milestone/:milestoneId/comment")
   .post(commentViewObj.createComment)
   .all(errorHandler.handle405);
 
   router
-  .route("/user-profile-management/comments")
+  .route("/milestone/:milestoneId/comments")
   .get(commentViewObj.getCommentList)
   .all(errorHandler.handle405);
 
 router
-  .route("/user-profile-management/comment/:commentId")
+  .route("/milestone/:milestoneId/comment/:commentId")
   .patch(commentViewObj.updateComment)
   .delete(commentViewObj.deleteComment)
   .all(errorHandler.handle405);

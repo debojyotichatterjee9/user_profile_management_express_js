@@ -4,17 +4,17 @@ const errorHandler = require("../../utils/error/errorHandler");
 const projectViewObj = require("./views");
 
 router
-  .route("/user-profile-management/project")
+  .route("/organization/:organizationId/project")
   .post(projectViewObj.createProject)
   .all(errorHandler.handle405);
 
   router
-  .route("/user-profile-management/projects")
+  .route("/organization/:organizationId/projects")
   .get(projectViewObj.getProjectList)
   .all(errorHandler.handle405);
 
 router
-  .route("/user-profile-management/project/:projectId")
+  .route("/organization/:organizationId/project/:projectId")
   .get(projectViewObj.getProjectDetails)
   .patch(projectViewObj.updateProject)
   .delete(projectViewObj.deleteProject)

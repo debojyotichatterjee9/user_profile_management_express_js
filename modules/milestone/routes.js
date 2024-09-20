@@ -4,17 +4,17 @@ const errorHandler = require("../../utils/error/errorHandler");
 const milestoneViewObj = require("./views");
 
 router
-  .route("/user-profile-management/milestone")
+  .route("/project/:projectId/milestone")
   .post(milestoneViewObj.createMilestone)
   .all(errorHandler.handle405);
 
   router
-  .route("/user-profile-management/milestones")
+  .route("/project/:projectId/milestones")
   .get(milestoneViewObj.getMilestoneList)
   .all(errorHandler.handle405);
 
 router
-  .route("/user-profile-management/milestone/:milestoneId")
+  .route("/project/:projectId/milestone/:milestoneId")
   .get(milestoneViewObj.getMilestoneDetails)
   .patch(milestoneViewObj.updateMilestone)
   .delete(milestoneViewObj.deleteMilestone)
