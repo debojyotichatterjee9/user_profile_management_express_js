@@ -76,7 +76,7 @@ module.exports = () => {
   });
 
   // Handle module routes
-  app.use([
+  app.use('/usr-prfl-mgmt',[
     authRoutes,
     userRoutes,
     organizationRoutes,

@@ -37,7 +37,7 @@ exports.findOraganizationByOrganizationId = async (organization_id) => {
 exports.getOrganizationInfoById = async (organizationId) => {
   try {
     const organizationInfo = await Organization.findOne({
-      $or: [{ _id: organizationId }, { organization_id }],
+      $or: [{ _id: organizationId }, { organization_id: organizationId }],
     }).select(["-salt_key", "-secret_hash", "-__v", "-is_deleted"]);
     return organizationInfo ?? false;
   } catch (error) {

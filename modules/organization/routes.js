@@ -4,17 +4,17 @@ const errorHandler = require("../../utils/error/errorHandler");
 const organizationViewObj = require("./views");
 
 router
-  .route("/user-profile-management/organization")
+  .route("/organization")
   .post(organizationViewObj.createOrganization)
   .all(errorHandler.handle405);
 
 router
-  .route("/user-profile-management/organizations")
+  .route("/organizations")
   .get(organizationViewObj.getOrganizationList)
   .all(errorHandler.handle405);
 
 router
-  .route("/user-profile-management/organization/:organizationId")
+  .route("/organization/:organizationId")
   .get(organizationViewObj.getOrganizationDetails)
   .patch(organizationViewObj.updateOrganization)
   .delete(organizationViewObj.deleteOrganization)
