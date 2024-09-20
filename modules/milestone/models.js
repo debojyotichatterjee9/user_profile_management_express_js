@@ -22,6 +22,17 @@ const AttachmentSchema = new mongoose.Schema({
   },
 });
 
+const MetaDataSchema = new mongoose.Schema(
+  {
+    is_enabled: { type: mongoose.Schema.Types.Boolean, default: false },
+    is_deleted: { type: mongoose.Schema.Types.Boolean, default: false },
+    enabled_on: { type: mongoose.Schema.Types.Date, default: null },
+    disabled_on: { type: mongoose.Schema.Types.Date, default: null },
+    deleted_on: { type: mongoose.Schema.Types.Date, default: null },
+  },
+  { _id: false, created_on: false, modified_on: false }
+);
+
 const MilestoneSchema = new mongoose.Schema({
   title: {
     type: mongoose.Schema.Types.String,
@@ -29,16 +40,44 @@ const MilestoneSchema = new mongoose.Schema({
     trim: true,
     maxlength: [100, "Milestone title cannot exceed 100 characters"],
   },
+  organization_id: {
+    type: mongoose.Schema.Types.String,
+    ref: "Organization",
+    required: [true, "Organization Id is required"],
+  },
+  project_id: {
+    type: mongoose.Schema.Types.String,
+    ref: "Project",
+    required: [true, "Project Id is required"],
+  },
+  start_date: {
+    type: mongoose.Schema.Types.Date,
+    required: [true, "Start date is required"],
+    default: Date.now,
+  },
   due_date: {
     type: mongoose.Schema.Types.Date,
     validate: {
       validator: function (v) {
         return v >= this.startDate && (!this.endDate || v <= this.endDate);
       },
-      message: "Milestone due date must be within project start and end dates",
+      message: "Milestone due date must be within start and end dates",
+    },
+  },
+  end_date: {
+    type: mongoose.Schema.Types.Date,
+    validate: {
+      validator: function (v) {
+        return v > this.startDate;
+      },
+      message: "End date must be after start date",
     },
   },
   assigned_to: {
+    type: mongoose.Schema.Types.String,
+    ref: "User",
+  },
+  assigned_by: {
     type: mongoose.Schema.Types.String,
     ref: "User",
   },
@@ -60,6 +99,7 @@ const MilestoneSchema = new mongoose.Schema({
     enum: ["Low", "Medium", "High"],
     default: "Medium",
   },
+  meta_data: { type: MetaDataSchema, default: () => ({}) },
 });
 
 // Add a pre-save hook to update the updatedAt field
@@ -69,6 +109,15 @@ MilestoneSchema.pre("save", function (next) {
 });
 
 // Define indexes for faster queries
-MilestoneSchema.index({ name: 1, organization: 1 }, { unique: true });
+MilestoneSchema.index(
+  {
+    name: 1,
+    organization_id: 1,
+    project_id: 1,
+    assigned_to: 1,
+    assigned_by: 1,
+  },
+  { unique: true }
+);
 
-exports.Project = mongoose.model("Milestone", MilestoneSchema);
+exports.Milestone = mongoose.model("Milestone", MilestoneSchema);

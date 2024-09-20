@@ -22,6 +22,14 @@ const AttachmentSchema = new mongoose.Schema({
   },
 });
 
+const MetaDataSchema = new mongoose.Schema(
+  {
+    is_deleted: { type: mongoose.Schema.Types.Boolean, default: false },
+    deleted_on: { type: mongoose.Schema.Types.Date, default: null },
+  },
+  { _id: false, created_on: false, modified_on: false }
+);
+
 const CommentSchema = new mongoose.Schema({
   comment: {
     type: mongoose.Schema.Types.String,
@@ -29,6 +37,16 @@ const CommentSchema = new mongoose.Schema({
     trim: true,
   },
   attachments: [AttachmentSchema],
+  organization_id: {
+    type: mongoose.Schema.Types.String,
+    ref: "Organization",
+    required: [true, "Organization Id is required"],
+  },
+  project_id: {
+    type: mongoose.Schema.Types.String,
+    ref: "Project",
+    required: [true, "Project Id is required"],
+  },
   commented_by: {
     type: mongoose.Schema.Types.String,
     ref: "User",
@@ -38,6 +56,7 @@ const CommentSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.Date,
     default: Date.now,
   },
+  meta_data: { type: MetaDataSchema, default: () => ({}) },
 });
 
 // Add a pre-save hook to update the updatedAt field
@@ -47,6 +66,9 @@ CommentSchema.pre("save", function (next) {
 });
 
 // Define indexes for faster queries
-CommentSchema.index({ name: 1, organization: 1 }, { unique: true });
+CommentSchema.index(
+  { commented_by: 1, organization_id: 1, project_id: 1 },
+  { unique: true }
+);
 
-exports.Project = mongoose.model("Comment", CommentSchema);
+exports.Comment = mongoose.model("Comment", CommentSchema);

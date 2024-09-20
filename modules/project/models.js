@@ -60,7 +60,7 @@ const ProjectSchema = new mongoose.Schema(
     organization_id: {
       type: mongoose.Schema.Types.String,
       ref: "Organization",
-      required: [true, "Organization is required"],
+      required: [true, "Organization Id is required"],
     },
     start_date: {
       type: mongoose.Schema.Types.Date,
