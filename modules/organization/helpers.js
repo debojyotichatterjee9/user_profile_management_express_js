@@ -38,7 +38,7 @@ exports.getOrganizationInfoById = async (organizationId) => {
   try {
     const organizationInfo = await Organization.findOne({
       $or: [{ _id: organizationId }, { organization_id: organizationId }],
-    }).select(["-salt_key", "-secret_hash", "-__v", "-is_deleted"]);
+    }).select(["-meta_data", "-__v"]);
     return organizationInfo ?? false;
   } catch (error) {
     return {
@@ -69,6 +69,13 @@ exports.getOrganizationList = async (queryParams) => {
       },
     ];
 
+    const finalProjectionQuery = {
+      $project: {
+        "organizations.__v": false,
+        "organizations.meta_data": false,
+      },
+    };
+
     if (name) {
       filter = { name: { $regex: name, $options: "i" } };
       aggregationPipline.unshift({ $match: filter });
@@ -92,12 +99,17 @@ exports.getOrganizationList = async (queryParams) => {
         { $unset: "_id" }
       );
     }
+
+    aggregationPipline.push(finalProjectionQuery);
+    console.log(">> ################################################## <<");
+    console.log(JSON.stringify(aggregationPipline));
+    console.log(">> ################################################## <<");
     const organizationList = await Organization.aggregate(aggregationPipline);
     const countFilteredDocs = await Organization.aggregate([
       { $match: filter },
       { $count: "count" },
     ]);
-    const totalFilteredDocsCount = countFilteredDocs[0].count;
+    const totalFilteredDocsCount = countFilteredDocs[0]?.count || 0;
     const totalOrganizationRecords = await Organization.countDocuments();
 
     if (!organizationList) {
@@ -124,9 +136,13 @@ exports.getOrganizationList = async (queryParams) => {
 
 exports.updateOrganization = async (organizationId, payload) => {
   try {
-    const organizationInfo = await Organization.findByIdAndUpdate(organizationId, payload, {
-      new: true,
-    });
+    const organizationInfo = await Organization.findByIdAndUpdate(
+      organizationId,
+      payload,
+      {
+        new: true,
+      }
+    );
     if (organizationInfo) {
       return {
         errorFlag: false,
@@ -147,33 +163,33 @@ exports.updateOrganization = async (organizationId, payload) => {
 };
 
 exports.deleteOrganization = async (organizationId) => {
-    try {
-      const organizationDeleteParams = {
-        "meta_data.is_enabled": false,
-        "meta_data.is_deleted": true,
-      };
-      const organizationInfo = await Organization.findByIdAndUpdate(
-        organizationId,
-        organizationDeleteParams,
-        {
-          new: true,
-          },
-      );
-      if (organizationInfo) {
-        return {
-          errorFlag: false,
-          organizationInfo,
-        };
-      } else {
-        return {
-          errorFlag: true,
-          message: "Organization deleteion failed.",
-        };
+  try {
+    const organizationDeleteParams = {
+      "meta_data.is_enabled": false,
+      "meta_data.is_deleted": true,
+    };
+    const organizationInfo = await Organization.findByIdAndUpdate(
+      organizationId,
+      organizationDeleteParams,
+      {
+        new: true,
       }
-    } catch (error) {
+    );
+    if (organizationInfo) {
+      return {
+        errorFlag: false,
+        organizationInfo,
+      };
+    } else {
       return {
         errorFlag: true,
-        message: error.message,
+        message: "Organization deleteion failed.",
       };
     }
-  };
+  } catch (error) {
+    return {
+      errorFlag: true,
+      message: error.message,
+    };
+  }
+};

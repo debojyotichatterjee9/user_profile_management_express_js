@@ -76,7 +76,7 @@ exports.getOrganizationList = async (request, response) => {
         total_filtered_organizations: organizationListResp.total_filtered_organizations,
         page: organizationListResp.page,
         limit: organizationListResp.limit,
-        user_list: organizationListResp.organization_list,
+        organization_list: organizationListResp.organization_list,
       },
     });
   } catch (error) {
