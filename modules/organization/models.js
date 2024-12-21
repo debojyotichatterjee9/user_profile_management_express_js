@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const uuid = require("uuid");
 
 const LocationSchema = new mongoose.Schema(
   {
@@ -50,16 +49,6 @@ const ContactSchema = new mongoose.Schema(
   { _id: false, created_on: false, modified_on: false }
 );
 
-const LogoSchema = new mongoose.Schema(
-  {
-    large: { type: mongoose.Schema.Types.String, trim: true },
-    medium: { type: mongoose.Schema.Types.String, trim: true },
-    small: { type: mongoose.Schema.Types.String, trim: true },
-    thumbnail: { type: mongoose.Schema.Types.String, trim: true },
-  },
-  { _id: false, created_on: false, modified_on: false }
-);
-
 const MetaDataSchema = new mongoose.Schema(
   {
     is_super_org: { type: mongoose.Schema.Types.Boolean, default: false },
@@ -87,14 +76,9 @@ const OrganizationSchema = new mongoose.Schema(
       index: true,
       require: [true, "Organization must have an unique email address!"],
     },
-    organization_id: {
-      type: mongoose.Schema.Types.String,
-      default: uuid.v4,
-      unique: true,
-    },
     address: [AddressSchema],
     contact: [ContactSchema],
-    logo: { type: LogoSchema, default: null },
+    logo: { type: mongoose.Schema.Types.String, trim: true },
     meta_data: { type: MetaDataSchema, default: () => ({}) },
   },
   {

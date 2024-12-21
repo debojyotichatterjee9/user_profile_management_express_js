@@ -4,7 +4,6 @@ exports.createOrganizationValidation = (payload) => {
     const JOISchema = JOI.object({
         name: JOI.string().required(),
         contact_email: JOI.string().required().email(),
-        organization_id: JOI.string(),
         address: JOI.array().items({
             type: JOI.string().empty(""),
             label: JOI.string().empty(""),
@@ -31,14 +30,9 @@ exports.createOrganizationValidation = (payload) => {
             number: JOI.string().empty(""),
             is_default: JOI.boolean().empty(""),
         }),
-        logo: JOI.object({
-            large: JOI.string().empty(""),
-            medium: JOI.string().empty(""),
-            small: JOI.string().empty(""),
-            thumbnail: JOI.string().empty(""),
-        }),
+        logo: JOI.string().empty(""),
         meta_data: JOI.object({
-            is_super_org: JOI.string().empty(""),
+            is_super_org: JOI.boolean().empty(""),
             is_enabled: JOI.string().empty(""),
             is_deleted: JOI.string().empty(""),
             enabled_on: JOI.string().empty(""),

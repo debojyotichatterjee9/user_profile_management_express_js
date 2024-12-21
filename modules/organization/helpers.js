@@ -3,15 +3,16 @@ const {
   DEFAULT_LIMIT,
 } = require("../../constants/api-generic-constants");
 const { Organization } = require("./models");
+const loggernaut = require("loggernaut");
 
 exports.createOrganization = async (payload) => {
   try {
-    const organizationInfo = new Organization();
-    organizationInfo.name = payload.name;
-    organizationInfo.contact_email = payload.contact_email;
-    organizationInfo.address = payload.address;
-    organizationInfo.contact = payload.contact;
-    organizationInfo.logo = payload.logo;
+    const organizationInfo = new Organization(payload);
+    // organizationInfo.name = payload.name;
+    // organizationInfo.contact_email = payload.contact_email;
+    // organizationInfo.address = payload.address;
+    // organizationInfo.contact = payload.contact;
+    // organizationInfo.logo = payload.logo;
     await organizationInfo.save();
     return {
       errorFlag: false,
@@ -38,7 +39,7 @@ exports.getOrganizationInfoById = async (organizationId) => {
   try {
     const organizationInfo = await Organization.findOne({
       $or: [{ _id: organizationId }, { organization_id: organizationId }],
-    }).select(["-meta_data", "-__v"]);
+    }).select(["-__v"]);
     return organizationInfo ?? false;
   } catch (error) {
     return {
@@ -101,9 +102,6 @@ exports.getOrganizationList = async (queryParams) => {
     }
 
     aggregationPipline.push(finalProjectionQuery);
-    console.log(">> ################################################## <<");
-    console.log(JSON.stringify(aggregationPipline));
-    console.log(">> ################################################## <<");
     const organizationList = await Organization.aggregate(aggregationPipline);
     const countFilteredDocs = await Organization.aggregate([
       { $match: filter },
@@ -149,12 +147,12 @@ exports.updateOrganization = async (organizationId, payload) => {
         organizationInfo,
       };
     } else {
-      return {
-        errorFlag: true,
-        message: "Organization update failed.",
-      };
+      throw new Error(
+        "Organization update failed. Please check the organization ID."
+      );
     }
   } catch (error) {
+    loggernaut.error(error.message);
     return {
       errorFlag: true,
       message: error.message,
@@ -165,8 +163,8 @@ exports.updateOrganization = async (organizationId, payload) => {
 exports.deleteOrganization = async (organizationId) => {
   try {
     const organizationDeleteParams = {
-      "meta_data.is_enabled": false,
       "meta_data.is_deleted": true,
+      "meta_data.deleted_on": new Date(),
     };
     const organizationInfo = await Organization.findByIdAndUpdate(
       organizationId,
