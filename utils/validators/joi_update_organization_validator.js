@@ -30,12 +30,7 @@ exports.payloadValidation = (payload) => {
             number: JOI.string().optional().empty(""),
             is_default: JOI.boolean().optional(),
         }),
-        logo: JOI.object({
-            large: JOI.string().optional().empty(""),
-            medium: JOI.string().optional().empty(""),
-            small: JOI.string().optional().empty(""),
-            thumbnail: JOI.string().optional().empty(""),
-        }),
+        logo: JOI.string().optional().empty(""),
         meta_data: JOI.object({
             is_super_org: JOI.string().optional().empty(""),
             is_enabled: JOI.string().optional().empty(""),

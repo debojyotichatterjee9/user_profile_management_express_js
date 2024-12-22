@@ -3,7 +3,7 @@ const createOrgValidatorUtilObj = require("../../utils/validators/joi_create_org
 const updateOrgValidatorUtilObj = require("../../utils/validators/joi_update_organization_validator.js");
 const organizationHelperObj = require("./helpers");
 const commonValidatorObj = require("../../utils/validators/common-validators.js");
-
+const loggernaut = require("loggernaut");
 exports.createOrganization = async (request, response) => {
   try {
     const [payload] = [request.body];
@@ -32,7 +32,7 @@ exports.createOrganization = async (request, response) => {
           ref: "SUCCESS",
           data: {
             organization: {
-              id: createOrgResp.organizationInfo.organization_id,
+              id: createOrgResp.organizationInfo.id,
             },
           },
         });
@@ -45,6 +45,7 @@ exports.createOrganization = async (request, response) => {
       }
     }
   } catch (error) {
+    loggernaut.error(error.message);
     return response
       .status(HTTP_RESPONSE.INTERNAL_SERVER_ERROR.statusCode)
       .send({
@@ -76,7 +77,7 @@ exports.getOrganizationList = async (request, response) => {
         total_filtered_organizations: organizationListResp.total_filtered_organizations,
         page: organizationListResp.page,
         limit: organizationListResp.limit,
-        user_list: organizationListResp.organization_list,
+        organization_list: organizationListResp.organization_list,
       },
     });
   } catch (error) {
@@ -171,11 +172,12 @@ exports.updateOrganization = async(request, response) => {
       return response.status(200).send({
         type: "SUCCESS",
         data: {
-          organization: updateOrganizationResp.organizationInfo,
+          organization: updateOrganizationResp.organizationInfo.id,
         },
       });
     }
   } catch (error) {
+    loggernaut.error(error.message);
     return response
       .status(HTTP_RESPONSE.INTERNAL_SERVER_ERROR.statusCode)
       .send({
