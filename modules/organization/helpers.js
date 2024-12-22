@@ -5,6 +5,8 @@ const {
 const { Organization } = require("./models");
 const loggernaut = require("loggernaut");
 
+/* The `exports.createOrganization` function is an asynchronous function that takes a `payload` as a
+parameter. Inside the function: */
 exports.createOrganization = async (payload) => {
   try {
     const organizationInfo = new Organization(payload);
@@ -22,6 +24,11 @@ exports.createOrganization = async (payload) => {
   }
 };
 
+/* The `exports.findOraganizationByOrganizationId` function is an asynchronous function that takes an
+`organization_id` as a parameter. Inside the function, it attempts to find an organization in the
+database based on the provided `organization_id` using the `Organization.findOne` method. If an
+organization is found, it returns the organization information. If no organization is found, it
+returns `false`. */
 exports.findOraganizationByOrganizationId = async (organization_id) => {
   try {
     const organizationInfo = await Organization.findOne({ organization_id });
